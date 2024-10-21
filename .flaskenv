@@ -1,0 +1,2 @@
+FLASK_APP=semantizar2.py
+FLASK_ENV=development
