@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background-color: #4c66af;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+nav {
+    margin: 1rem 0;
+    text-align: center;
+}
+
+nav a {
+    margin: 0 1rem;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: #4c66af;
+}
+
+.container {
+    width: 80%;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+}
+
+h1 {
+    color: #4c66af;
+    text-align: center;
+}
+
+p {
+    line-height: 1.6;
+}
+
+.button {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    margin: 1rem 0;
+    background-color: #4c66af;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 1rem;
+}
+
+.button:hover {
+    background-color: #4c66af;
+}
+
+.features {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.feature {
+    background-color: #e7eef3;
+    padding: 1rem;
+    border-radius: 5px;
+    width: 30%;
+    text-align: center;
+}
+
+.feature h3 {
+    color: #333;
+}
+
+.feature p {
+    color: #555;
+}
