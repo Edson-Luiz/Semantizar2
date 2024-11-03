@@ -1,14 +1,27 @@
-body {
-    font-family: Arial, sans-serif;
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box; /* Garante que padding e borda sejam incluídos na largura/altura total */
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden; /* Impede rolagem lateral */
     background-color: #f4f4f4;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Garante que o body ocupe pelo menos 100% da altura da viewport */
     color: #333;
 }
 
 header {
     background-color: #4c66af;
-    color: white;
+    color: white; /* Garante que o texto no header fique branco */
     padding: 1rem;
     text-align: center;
 }
@@ -30,6 +43,8 @@ nav a:hover {
 }
 
 .container {
+    flex: 1; /* Ocupará o espaço restante da tela, empurrando o footer para baixo se necessário */
+    max-width: 100vw; /* Impede que a largura ultrapasse o tamanho da tela */
     width: 80%;
     margin: 0 auto;
     padding: 2rem;
@@ -41,19 +56,19 @@ footer {
     background-color: #333;
     color: white;
     text-align: center;
-    padding: 1rem;
-    position: absolute;
+    padding: 0.5rem;
     width: 100%;
-    bottom: 0;
 }
 
 h1 {
-    color: #4c66af;
+    color: #ffffff;
     text-align: center;
+    margin-bottom: 1.5rem; /* Aumenta o espaço abaixo do título */
 }
 
 p {
     line-height: 1.6;
+    margin-top: 1rem; /* Adiciona um pouco de espaço acima dos parágrafos */
 }
 
 .button {
@@ -77,6 +92,7 @@ p {
     display: flex;
     justify-content: space-between;
     margin-top: 2rem;
+    flex-wrap: wrap; /* Permite que os itens se ajustem em telas menores */
 }
 
 .feature {
@@ -85,6 +101,7 @@ p {
     border-radius: 5px;
     width: 30%;
     text-align: center;
+    margin-bottom: 1rem;
 }
 
 .feature h3 {
