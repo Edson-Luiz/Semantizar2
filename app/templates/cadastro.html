@@ -31,31 +31,31 @@
             <form action="processar_cadastro.php" method="post" enctype="multipart/form-data">
                 <!-- Título da Publicação -->
                 <div class="form-group">
-                    <label for="titulo">Título da publicação *</label>
+                    <label for="titulo">Título da publicação: </label>
                     <input type="text" id="titulo" name="titulo" required>
                 </div>
 
                 <!-- Nome do autor -->
                 <div class="form-group">
-                    <label for="autor">Nome do autor *</label>
+                    <label for="autor">Nome do autor: </label>
                     <input type="text" id="autor" name="autor" required>
                 </div>
 
                 <!-- Nome do orientador -->
                 <div class="form-group">
-                    <label for="orientador">Nome do orientador *</label>
+                    <label for="orientador">Nome do orientador: </label>
                     <input type="text" id="orientador" name="orientador" required>
                 </div>
 
                 <!-- Nome do coorientador -->
                 <div class="form-group">
-                    <label for="coorientador">Nome do coorientador</label>
+                    <label for="coorientador">Nome do coorientador: </label>
                     <input type="text" id="coorientador" name="coorientador">
                 </div>
 
                 <!-- Universidade -->
                 <div class="form-group">
-                    <label for="universidade">Universidade *</label>
+                    <label for="universidade">Universidade:</label>
                     <select id="universidade" name="universidade" required>
                         <option value="UEMG">UEMG - Universidade do Estado de Minas Gerais</option>
                         <!-- Adicione outras universidades aqui -->
@@ -64,26 +64,26 @@
 
                 <!-- Ano -->
                 <div class="form-group">
-                    <label for="ano">Ano *</label>
+                    <label for="ano">Ano: </label>
                     <input type="number" id="ano" name="ano" min="1900" max="2100" required>
                 </div>
 
                 <!-- Tipo de Publicação -->
                 <div class="form-group">
-                    <label>Tipo de Publicação *</label>
-                    <label><input type="radio" name="tipo_publicacao" value="Dissertação" required> Dissertação</label>
+                    <label>Tipo de Publicação: </label><br>
+                    <label><input type="radio" name="tipo_publicacao" value="Dissertação" required> Dissertação</label><br>
                     <label><input type="radio" name="tipo_publicacao" value="Tese"> Tese</label>
                 </div>
 
                 <!-- Arquivo da publicação -->
                 <div class="form-group">
-                    <label for="arquivo_publicacao">Selecione o arquivo da publicação (PDF) *</label>
+                    <label for="arquivo_publicacao">Selecione o arquivo da publicação (PDF)</label><br>
                     <input type="file" id="arquivo_publicacao" name="arquivo_publicacao" accept=".pdf" required>
                 </div>
 
                 <!-- Arquivo de classificação -->
                 <div class="form-group">
-                    <label for="arquivo_classificacao">Selecione o arquivo da estrutura de classificação (TXT) *</label>
+                    <label for="arquivo_classificacao">Selecione o arquivo da estrutura de classificação (TXT)</label><br>
                     <input type="file" id="arquivo_classificacao" name="arquivo_classificacao" accept=".txt" required>
                 </div>
 
