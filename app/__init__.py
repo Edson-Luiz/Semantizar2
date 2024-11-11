@@ -10,7 +10,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:edsonabc12312@loca
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializa o banco de dados (SQLAlchemy)
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 @app.route("/teste")
 def test_db():
@@ -27,6 +27,7 @@ from app import routes  # Importa as rotas
 
 # Iniciar a aplicação
 def create_app():
+    db.init_app(app)
     return app
 
 
