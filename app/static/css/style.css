@@ -20,8 +20,7 @@ body {
 }
 
 header {
-    background-color: #4c66af;
-    color: white; /* Garante que o texto no header fique branco */
+    color: rgb(71, 21, 206); /* Garante que o texto no header fique branco */
     padding: 1rem;
     text-align: center;
 }
@@ -50,18 +49,19 @@ nav a:hover {
     padding: 2rem;
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
 }
 
 footer {
-    background-color: #333;
-    color: white;
+    
+    color: rgb(39, 41, 148);
     text-align: center;
     padding: 0.5rem;
     width: 100%;
 }
 
 h1 {
-    color: #ffffff;
+    color: #001aff;
     text-align: center;
     margin-bottom: 1.5rem; /* Aumenta o espaço abaixo do título */
 }
