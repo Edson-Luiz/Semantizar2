@@ -7,45 +7,91 @@
     <title>Semantizar 2</title>
     <!-- Link para o arquivo CSS na pasta static -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
 
 <header>
     <h1>Semantizar 2</h1>
+    
 </header>
 
-<nav>
-    <a href="sobre">Sobre</a>
-    <a href="#">Funcionalidades</a>
-    <a href="contato">Contato</a>
-</nav>
+<nav class="menu-lateral">
+
+    <div class="btn-expandir">
+        <i class="bi bi-list" id="btn-exp"></i>
+    </div><!--btn-expandir-->
+
+    <ul>
+        <li class="item-menu ativo">
+            <a href="#">
+                <span class="icon"><i class="bi bi-house-door"></i></span>
+                <span class="txt-link">Home</span>
+            </a>
+        </li>
+        <li class="item-menu">
+            <a href="#">
+                <span class="icon"><i class="bi bi-columns-gap"></i></span>
+                <span class="txt-link">Dashboard</span>
+            </a>
+        </li>
+        <li class="item-menu">
+            <a href="#">
+                <span class="icon"><i class="bi bi-calendar3"></i></span>
+                <span class="txt-link">Agenda</span>
+            </a>
+        </li>
+        <li class="item-menu">
+            <a href="#">
+                <span class="icon"><i class="bi bi-gear"></i></span>
+                <span class="txt-link">Configurações</span>
+            </a>
+        </li>
+        <li class="item-menu">
+            <a href="#">
+                <span class="icon"><i class="bi bi-person-circle"></i></span>
+                <span class="txt-link">Conta</span>
+            </a>
+        </li>
+    </ul>
+
+</nav><!--menu-lateral-->
+
+<lord-icon
+src="https://cdn.lordicon.com/lupuorrc.json"
+trigger="loop"
+style="width:250px;height:250px">
+</lord-icon>
 
 <div class="container">
     <h2>O que é o Semantizar 2?</h1>
-    <p>O Semantizar 2 é um sistema avançado para a extração e explicitação de relações semânticas em documentos acadêmicos. Nosso objetivo é facilitar a análise semântica de textos, automatizando o processo de identificação de padrões e estruturas de significados.</p>
-    <p>Com uma interface intuitiva e poderosa, o Semantizar 2 ajuda pesquisadores e acadêmicos a analisar grandes volumes de documentos de forma mais eficiente.</p>
+    <p>O Semantizar 2 é um sistema para a extração e explicitação de relações semânticas em livros, artigos e documentos acadêmicos. Nosso objetivo é facilitar a análise semântica de textos, semi-automatizando o processo de identificação de padrões e estruturas de significados.</p>
+    <p>Com uma interface intuitiva e simples, o Semantizar 2 ajuda pesquisadores e acadêmicos a analisar grandes volumes de documentos de forma mais eficiente.</p>
     <a href="#" class="button">Saiba Mais</a>
 
     <div class="features">
         <div class="feature">
-            <h3>Extração Automática</h3>
+            <h3>Extração automática</h3>
             <p>Identifique relações semânticas em textos com o clique de um botão.</p>
         </div>
         <div class="feature">
-            <h3>Interface Intuitiva</h3>
+            <h3>Interface intuitiva</h3>
             <p>Navegue facilmente através de uma interface limpa e moderna.</p>
         </div>
         <div class="feature">
-            <h3>Resultados Precisos</h3>
+            <h3>Resultados precisos</h3>
             <p>Obtenha resultados detalhados e de alta precisão em suas análises.</p>
         </div>
     </div>
     <a href="cadastro" class="button">Cadastre-se Agora</a>
 </div>
 
+  
 <footer>
     <p>&copy; 2024 Semantizar 2. Todos os direitos reservados.</p>
 </footer>
 
+    <script src="{{ url_for('static', filename='../static/js/script.js') }}"></script>
 </body>
 </html>

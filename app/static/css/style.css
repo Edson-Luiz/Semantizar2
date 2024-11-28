@@ -1,7 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box; /* Garante que padding e borda sejam incluídos na largura/altura total */
+    font-family: "Poppins", sans-serif;
 }
 
 html, body {
@@ -20,25 +24,81 @@ body {
 }
 
 header {
-    color: rgb(71, 21, 206); /* Garante que o texto no header fique branco */
+    color: #4715ce; /* Garante que o texto no header fique branco */
     padding: 1rem;
     text-align: center;
 }
 
-nav {
-    margin: 1rem 0;
-    text-align: center;
+nav.menu-lateral{
+    width: 80px;
+    height: 100%;
+    background-color: #202020;
+    padding: 40px 0 40px 1%;
+    box-shadow: 3px 0 0 #4715ce;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    transition: .5s;
 }
 
-nav a {
-    margin: 0 1rem;
+nav.menu-lateral.expandir{
+    width: 300px;
+}
+
+.btn-expandir{
+    width: 100%;
+    padding-left: 10px;
+}
+
+.btn-expandir > i{
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+ul{
+    height: 100%;
+    list-style-type: none;
+}
+
+ul li.item-menu{
+    transition: .2s;
+}
+
+ul li.ativo{
+    background-color: #4715ce;
+}
+
+ul li.item-menu:hover{
+    background: #4715ce;
+}
+
+ul li.item-menu a{
+    color: #fff;
     text-decoration: none;
-    color: #333;
-    font-weight: bold;
+    font-size: 20px;
+    padding: 20px 4%;
+    display: flex;
+    margin-bottom: 20px;
+    line-height: 40px;
 }
 
-nav a:hover {
-    color: #4c66af;
+ul li.item-menu a .txt-link{
+    margin-left: 70px;
+    transition: .5s;
+    opacity: 0;
+}
+
+nav.menu-lateral.expandir .txt-link{
+    margin-left: 40px;
+    opacity: 1;
+}
+
+ul li.item-menu a .icon > i{
+    font-size: 30px;
+    margin-left: 10px;
 }
 
 .container {
@@ -53,7 +113,6 @@ nav a:hover {
 }
 
 footer {
-    
     color: rgb(39, 41, 148);
     text-align: center;
     padding: 0.5rem;
@@ -63,12 +122,12 @@ footer {
 h1 {
     color: #001aff;
     text-align: center;
-    margin-bottom: 1.5rem; /* Aumenta o espaço abaixo do título */
+    margin-bottom: 1.5rem;
 }
 
 p {
     line-height: 1.6;
-    margin-top: 1rem; /* Adiciona um pouco de espaço acima dos parágrafos */
+    margin-top: 1rem;
 }
 
 .button {
@@ -92,7 +151,7 @@ p {
     display: flex;
     justify-content: space-between;
     margin-top: 2rem;
-    flex-wrap: wrap; /* Permite que os itens se ajustem em telas menores */
+    flex-wrap: wrap;
 }
 
 .feature {
