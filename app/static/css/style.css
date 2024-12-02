@@ -56,6 +56,11 @@ nav.menu-lateral.expandir{
     color: #fff;
     font-size: 24px;
     cursor: pointer;
+    position: relative;
+    top: -20px;
+    left: 2px
+
+
 }
 
 ul{
@@ -107,9 +112,7 @@ ul li.item-menu a .icon > i{
     width: 80%;
     margin: 0 auto;
     padding: 2rem;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 20px;
+    
 }
 
 footer {

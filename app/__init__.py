@@ -6,7 +6,7 @@ from sqlalchemy import text
 app = Flask(__name__)
 
 # Configurações básicas (adicionar configurações de MySQL mais tarde)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:edsonabc12312@localhost/semantizar2_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:#@localhost/semantizar2_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializa o banco de dados (SQLAlchemy)
