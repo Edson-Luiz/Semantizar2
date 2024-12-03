@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300&display=swap');
 
 * {
@@ -27,6 +28,7 @@ header {
     color: #4715ce; /* Garante que o texto no header fique branco */
     padding: 1rem;
     text-align: center;
+    
 }
 
 nav.menu-lateral{
@@ -35,7 +37,6 @@ nav.menu-lateral{
     background-color: #202020;
     padding: 40px 0 40px 1%;
     box-shadow: 3px 0 0 #4715ce;
-
     position: fixed;
     top: 0;
     left: 0;
@@ -112,6 +113,7 @@ ul li.item-menu a .icon > i{
     width: 80%;
     margin: 0 auto;
     padding: 2rem;
+    margin-bottom: 5rem;
     
 }
 
@@ -120,12 +122,21 @@ footer {
     text-align: center;
     padding: 0.5rem;
     width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 
 h1 {
     color: #001aff;
     text-align: center;
     margin-bottom: 1.5rem;
+    margin-top: 1rem;
+    
+}
+
+a {
+    text-decoration: none;
 }
 
 p {
@@ -133,6 +144,20 @@ p {
     margin-top: 1rem;
 }
 
+.img-publicacao img {
+    width: 13rem;
+    margin-top: 2rem;
+    margin-left: 8rem;
+}
+
+.img-publicacao p {
+
+    margin-top: 7rem;
+    margin-left: 30rem;
+
+}
+
+    
 .button {
     display: inline-block;
     padding: 0.5rem 1rem;
