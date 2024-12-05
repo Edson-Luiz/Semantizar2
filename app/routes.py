@@ -22,6 +22,19 @@ def contato():
 def cadastro():
     return render_template('cadastro.html')
 
+@app.route('/cadastroLivro')
+def cadastroLivro():
+    return render_template('cadastroLivro.html')
+
+@app.route('/cadastroArtigo')
+def cadastroArtigo():
+    return render_template('cadastroArtigo.html')
+
+@app.route('/cadastroDocAcademico')
+def cadastroDocAcademico():
+    return render_template('cadastroDocAcademico.html')
+
+
 
     
 
