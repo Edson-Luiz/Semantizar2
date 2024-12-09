@@ -56,25 +56,32 @@
     </nav>
 
 
-    <div class="container">
+    <div class="forms">
 
         <form action="/submit" method="post" enctype="multipart/form-data">
             <label for="autor">Autor</label><br>
             <input type="text" id="autor" name="autor"><br>
-            <label for="titulo">Titulo</label><br>
+        
+            <label for="titulo">Título</label><br>
             <input type="text" id="titulo" name="titulo"><br>
+        
             <label for="ano">Ano</label><br>
             <input type="date" id="ano" name="ano"><br>
-            <label for="revista">Revista</label><br>
-            <input type="text" id="revista" name="revista"><br>
-            <label for="volume">Volume</label><br>
-            <input type="text" id="volume" name="volume"><br>
-            <label for="numero">Numero</label><br>
-            <input type="text" id="numero" name="numero"><br>
-            <label for="paginas">Paginas</label><br>
-            <input type="text" id="paginas" name="paginas"><br>
-            <label for="doi">DOI</label><br>
-            <input type="text" id="doi" name="doi"><br>
+        
+            <label for="editora">Editora</label><br>
+            <input type="text" id="editora" name="editora"><br>
+        
+            <label for="isbn">ISBN</label><br>
+            <input type="text" id="isbn" name="isbn"><br>
+
+            <div class="file-upload">
+                <input type="file" id="file" name="file" multiple>
+                <label for="file" id="drag-area">Arraste o arquivo aqui ou clique para selecionar</label>
+            </div>
+
+            <div id="file-name-display" class="file-name-display">
+                <p>Nenhum arquivo selecionado</p>
+            </div>
 
             <button type="submit">Enviar</button>
 

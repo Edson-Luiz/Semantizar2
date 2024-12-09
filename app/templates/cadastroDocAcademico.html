@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastrar Documento Acadêmico</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 </head>
 <body>
@@ -55,10 +56,56 @@
     </nav>
 
 
-    <div class="container">
+    <div class="forms">
 
+        <form action="/submit" method="post" enctype="multipart/form-data">
+            <label for="autor">Autor</label><br>
+            <input type="text" id="autor" name="autor"><br>
+
+            <label for="titulo">Título</label><br>
+            <input type="text" id="titulo" name="titulo"><br>
+    
+            <label for="ano">Ano</label><br>
+            <input type="date" id="ano" name="ano"><br>
+    
+            <label for="orientador">Orientador</label><br>
+            <input type="text" id="orientador" name="orientador"><br>
+    
+            <label for="coorientador">Coorientador</label><br>
+            <input type="text" id="coorientador" name="coorientador"><br>
+    
+            <label for="universidade">Universidade</label><br>
+            <select id="universidade" name="universidade">
+                <option value="ufrj">Universidade Federal do Rio de Janeiro (UFRJ)</option>
+                <option value="usp">Universidade de São Paulo (USP)</option>
+                <option value="ufmg">Universidade Federal de Minas Gerais (UFMG)</option>
+                <option value="ufg">Universidade Federal de Goiás (UFG)</option>
+                <option value="outra">Outra</option>
+            </select><br>
+    
+            <label>Tipo de Documento Acadêmico</label><br>
+            <input type="radio" id="tese" name="tipo_documento" value="tese">
+            <label for="tese">Tese</label><br>
+            <input type="radio" id="dissertacao" name="tipo_documento" value="dissertacao">
+            <label for="dissertacao">Dissertação</label><br>
+            <input type="radio" id="tcc" name="tipo_documento" value="tcc">
+            <label for="tcc">TCC</label><br>
+
+            <div class="file-upload">
+                <input type="file" id="file" name="file" multiple>
+                <label for="file" id="drag-area">Arraste o arquivo aqui ou clique para selecionar</label>
+            </div>
+
+            <div id="file-name-display" class="file-name-display">
+                <p>Nenhum arquivo selecionado</p>
+            </div>
+
+            <button type="submit">Enviar</button>
+
+        </form>
          
     </div>
+    
     
 
     <footer>
