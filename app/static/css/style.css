@@ -21,6 +21,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh; /* Garante que o body ocupe pelo menos 100% da altura da viewport */
+    margin: 0;
     color: #333;
 }
 
@@ -122,9 +123,7 @@ footer {
     text-align: center;
     padding: 0.5rem;
     width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
+    position: relative;
 }
 
 h1 {
@@ -144,19 +143,56 @@ p {
     margin-top: 1rem;
 }
 
-.img-publicacao img {
-    width: 13rem;
-    margin-top: 2rem;
+.img-publicacao{
+
+
     margin-left: 8rem;
-}
-
-.img-publicacao p {
-
-    margin-top: 7rem;
-    margin-left: 30rem;
 
 }
 
+.img-publicacao img {
+    width: 12rem;
+    margin-top: 2rem;
+    margin-left: 6rem;
+}
+
+.img-publicacao span {
+
+    color: rgb(39, 41, 148);
+    font-size: 1.2rem;
+    font-weight: bold;
+
+}
+
+.img-livro{
+
+    position: absolute;
+    left: 140px;
+
+}
+
+.img-artigo{
+
+    position: absolute;
+    left: 485px;
+
+}
+
+.img-doc{
+
+    position: absolute;
+    left: 950px;
+
+}
+
+.linha {
+
+    margin-left: -1rem;
+    margin-top: 8rem;
+    display: flex;
+    justify-content: space-between; /* Espaça uniformemente os itens */
+    width: 95%; /* Ajuste conforme necessário */
+}
     
 .button {
     display: inline-block;

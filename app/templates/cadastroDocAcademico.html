@@ -81,20 +81,27 @@
                 <option value="ufmg">Universidade Federal de Minas Gerais (UFMG)</option>
                 <option value="ufg">Universidade Federal de Goiás (UFG)</option>
                 <option value="outra">Outra</option>
-            </select><br>
+            </select><br><br>
     
-            <label>Tipo de Documento Acadêmico</label><br>
-            <input type="radio" id="tese" name="tipo_documento" value="tese">
-            <label for="tese">Tese</label><br>
-            <input type="radio" id="dissertacao" name="tipo_documento" value="dissertacao">
-            <label for="dissertacao">Dissertação</label><br>
-            <input type="radio" id="tcc" name="tipo_documento" value="tcc">
-            <label for="tcc">TCC</label><br>
+            <label>Tipo do documento acadêmico</label><br>
+            <div class="radio-group">
+                <input type="radio" id="tese" name="tipo_documento" value="tese">
+                <label for="tese">Tese</label>
+            </div>
+            <div class="radio-group">
+                <input type="radio" id="dissertacao" name="tipo_documento" value="dissertacao">
+                <label for="dissertacao">Dissertação</label>
+            </div>
+            <div class="radio-group">
+                <input type="radio" id="tcc" name="tipo_documento" value="tcc">
+                <label for="tcc">TCC</label>
+            </div>
+
 
             <div class="file-upload">
                 <input type="file" id="file" name="file" multiple>
-                <label for="file" id="drag-area">Arraste o arquivo aqui ou clique para selecionar</label>
-            </div>
+                <label for="file" id="drag-area">Arraste o arquivo aqui ou clique para selecionar</label><br>
+            </div><br>
 
             <div id="file-name-display" class="file-name-display">
                 <p>Nenhum arquivo selecionado</p>
