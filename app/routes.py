@@ -13,6 +13,10 @@ def home():
 def sobre():
     return render_template('sobre.html')
 
+@app.route('/validacao')
+def validacao():
+    return render_template('validacao.html')
+
 # Rota para a página "Contato"
 @app.route('/contato')
 def contato():

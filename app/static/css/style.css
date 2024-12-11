@@ -43,6 +43,7 @@ nav.menu-lateral{
     left: 0;
     overflow: hidden;
     transition: .5s;
+    z-index: 1000;
 }
 
 nav.menu-lateral.expandir{
@@ -109,6 +110,7 @@ ul li.item-menu a .icon > i{
 }
 
 .container {
+
     flex: 1; /* Ocupará o espaço restante da tela, empurrando o footer para baixo se necessário */
     max-width: 100vw; /* Impede que a largura ultrapasse o tamanho da tela */
     width: 80%;
@@ -117,6 +119,54 @@ ul li.item-menu a .icon > i{
     margin-bottom: 5rem;
     
 }
+
+.validacao {
+    
+    flex: 1; /* Ocupará o espaço restante da tela, empurrando o footer para baixo se necessário */
+    max-width: 100vw; /* Impede que a largura ultrapasse o tamanho da tela */
+    width: 80%;
+    margin: 0 auto;
+    padding: 2rem;
+    margin-bottom: 10rem;
+    justify-content: center;
+    background-color: #d2d4e6;
+    border-radius: 10px;
+    
+    
+    
+    
+}
+
+.validacao-text{
+    
+    max-width: 100vw;
+    background-color: #a8aff0;
+    border-radius: 10px;
+    border-color: black;
+    margin: 0 auto;
+    padding: 1rem;
+    
+    
+
+}
+
+.validacao-text p{
+    
+    margin-left: 10px;
+    
+    
+
+}
+
+.validacao-text a{
+    
+    margin-left: 10px;
+    
+
+}
+
+
+
 
 footer {
     color: rgb(39, 41, 148);
@@ -233,6 +283,38 @@ p {
 
 .feature p {
     color: #555;
+}
+
+.file-upload {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.file-upload input[type="file"] {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+#drag-area {
+    border: 2px dashed #007BFF;
+    padding: 30px;
+    border-radius: 5px;
+    color: #007BFF;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+#drag-area:hover {
+    background-color: #007BFF;
+    color: white;
+}
+
+.file-name-display {
+    margin-top: 40px;
+    color: #555;
+    font-style: italic;
 }
 
 
