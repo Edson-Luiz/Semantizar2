@@ -17,6 +17,10 @@ def sobre():
 def validacao():
     return render_template('validacao.html')
 
+@app.route('/visualizacao')
+def visualizacao():
+    return render_template('visualizacao.html')
+
 # Rota para a página "Contato"
 @app.route('/contato')
 def contato():
@@ -37,6 +41,10 @@ def cadastroArtigo():
 @app.route('/cadastroDocAcademico')
 def cadastroDocAcademico():
     return render_template('cadastroDocAcademico.html')
+
+@app.route('/cadastroRelacao')
+def cadastroRelacao():
+    return render_template('cadastroRelacao.html')
 
 
 
