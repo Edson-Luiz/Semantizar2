@@ -72,3 +72,34 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+
+
+document.getElementById('adicionar-termo').addEventListener('click', function () {
+    const termoInput = document.getElementById('termo-input');
+    const termo = termoInput.value.trim();
+
+    if (termo !== '') {
+        adicionarTermo(termo);
+        termoInput.value = '';
+        termoInput.focus();
+    } else {
+        alert('Por favor, insira um termo válido.');
+    }
+});
+
+function adicionarTermo(termo) {
+    const listaTermos = document.getElementById('lista-termos');
+    const li = document.createElement('li');
+    li.innerHTML = `
+        <span>${termo}</span>
+        <button onclick="removerTermo(this)">Remover</button>
+    `;
+    listaTermos.appendChild(li);
+}
+
+function removerTermo(button) {
+    const li = button.parentElement;
+    li.remove();
+}
