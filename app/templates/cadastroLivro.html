@@ -55,15 +55,7 @@
     
     </nav>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="messages">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    {% endwith %}
+    
 
 
     <div class="forms">
@@ -83,11 +75,32 @@
         
             <label for="isbn">ISBN</label><br>
             <input type="text" id="isbn" name="isbn"><br>
-            
+
+            <div class="file-upload">
+                <input type="file" id="file" name="file" multiple>
+                <label for="file" id="drag-area">Arraste o arquivo aqui ou clique para selecionar</label>
+            </div>
+    
+            <div id="file-name-display" class="file-name-display">
+                <p>Nenhum arquivo selecionado</p>
+            </div>
 
             <button type="submit">Enviar</button>
+            
 
         </form>
+
+        <br>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="messages">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
          
     </div>
     

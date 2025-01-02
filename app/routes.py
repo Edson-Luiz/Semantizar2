@@ -2,8 +2,6 @@
 from flask import render_template, request, redirect, url_for, flash
 from app import *
 
- 
-
 # Rota para a página inicial
 @app.route('/')
 def home():
@@ -64,14 +62,13 @@ def cadastroLivro():
     return render_template('cadastroLivro.html')
 
 
-@app.route('/cadastroArtigo')
+@app.route('/cadastroArtigo', methods=['GET', 'POST'])
 def cadastroArtigo():
     if request.method == 'POST':
         try:
             titulo = request.form['titulo']
             autor = request.form['autor']
             ano = int(request.form['ano'])
-            sigla_universidade = request.form['sigla_universidade']
             revista = request.form['revista']
             volume = int(request.form['volume'])
             numero = int(request.form['numero'])
@@ -82,7 +79,6 @@ def cadastroArtigo():
                 TituloPublicacao=titulo,
                 AutorPublicacao=autor,
                 AnoPublicacao=ano,
-                SiglaUniversidade=sigla_universidade
             )
             db.session.add(nova_publicacao)
             db.session.flush()  # Obtem o ID da publicacao
@@ -97,12 +93,14 @@ def cadastroArtigo():
             )
             db.session.add(novo_artigo)
             db.session.commit()
-            return redirect(url_for('index'))
+
+            flash("Cadastro realizado com sucesso!", "success")
+            return redirect(url_for('cadastroArtigo'))
         except Exception as e:
             return f"Erro ao cadastrar artigo: {e}"
     return render_template('cadastroArtigo.html')
 
-@app.route('/cadastroDocAcademico')
+@app.route('/cadastroDocAcademico', methods=['GET', 'POST'])
 def cadastroDocAcademico():
     if request.method == 'POST':
         try:
@@ -117,7 +115,6 @@ def cadastroDocAcademico():
                 TituloPublicacao=titulo,
                 AutorPublicacao=autor,
                 AnoPublicacao=ano,
-                SiglaUniversidade=sigla_universidade
             )
             db.session.add(nova_publicacao)
             db.session.flush()
@@ -129,7 +126,9 @@ def cadastroDocAcademico():
             )
             db.session.add(novo_doc)
             db.session.commit()
-            return redirect(url_for('index'))
+
+            flash("Cadastro realizado com sucesso!", "success")
+            return redirect(url_for('cadastroDocAcademico'))
         except Exception as e:
             return f"Erro ao cadastrar documento acadêmico: {e}"
     return render_template('cadastroDocAcademico.html')
