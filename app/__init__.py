@@ -4,10 +4,10 @@ from sqlalchemy import text
 
 # Inicializa o app Flask
 app = Flask(__name__)
-app.secret_key = '#'
+app.secret_key = '9xCq0VHwlW16Pv7CIXWX'
 
 # Configuração do banco de dados MySQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:#@localhost/semantizar2_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:edsonabc12312@localhost/semantizar2_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializa o banco de dados (SQLAlchemy)
@@ -27,6 +27,8 @@ class Publicacao(db.Model):
     TituloPublicacao = db.Column(db.String(255), nullable=False)
     AutorPublicacao = db.Column(db.String(100), nullable=False)
     AnoPublicacao = db.Column(db.Integer, nullable=False)
+
+    autores = db.relationship('Autor', secondary='tbAutorPublicacao', back_populates='publicacoes')
    
 
 class Livro(db.Model):
@@ -59,6 +61,24 @@ class DocAcademico(db.Model):
         db.String(50), db.ForeignKey('tbUniversidade.SiglaUniversidade')
     )
     universidade = db.relationship('Universidade', backref='publicacoes')
+
+class AutorPublicacao(db.Model):
+    __tablename__ = 'tbAutorPublicacao'
+
+    IDAutor = db.Column(db.Integer, db.ForeignKey('tbAutor.IDAutor'), primary_key=True)
+    IDPublicacao = db.Column(db.Integer, db.ForeignKey('tbPublicacao.IDPublicacao'), primary_key=True)
+
+class Autor(db.Model):
+    __tablename__ = 'tbAutor'
+
+    IDAutor = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    NomeAutor = db.Column(db.String(100), nullable=False)
+    
+    # Relacionamento muitos para muitos com Publicacao
+    publicacoes = db.relationship('Publicacao', secondary='tbAutorPublicacao', back_populates='autores')
+
+
+
 
 from app import routes
 # Inicializa o banco e roda o app

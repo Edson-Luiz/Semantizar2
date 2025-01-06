@@ -103,3 +103,37 @@ function removerTermo(button) {
     const li = button.parentElement;
     li.remove();
 }
+
+
+
+
+
+function addAuthor() {
+    const container = document.getElementById('authors-container');
+    const newAuthorGroup = document.createElement('div');
+    newAuthorGroup.classList.add('author-group');
+
+    // Cria um novo campo de entrada para o autor
+    const newInput = document.createElement('input');
+    newInput.type = 'text';
+    newInput.name = 'autor[]';
+    newInput.placeholder = 'Nome do Autor';
+    newInput.required = true;
+
+    // Cria o botão de remover
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.textContent = 'Remover';
+    removeButton.classList.add('remove-author');
+    removeButton.onclick = function() { removeAuthor(removeButton); };
+
+    // Adiciona os novos elementos no container
+    newAuthorGroup.appendChild(newInput);
+    newAuthorGroup.appendChild(removeButton);
+    container.appendChild(newAuthorGroup);
+}
+
+function removeAuthor(button) {
+    // Remove o grupo de autor que contém o botão de remoção
+    button.parentElement.remove();
+}

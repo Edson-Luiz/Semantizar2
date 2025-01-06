@@ -44,6 +44,12 @@ input[type="radio"] {
 
 }
 
+input[name="ano"] {
+
+    width: 60px;
+ 
+}
+
 .radio-group label {
 
 

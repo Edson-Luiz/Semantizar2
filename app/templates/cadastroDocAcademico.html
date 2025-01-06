@@ -37,7 +37,7 @@
             <li class="item-menu">
                 <a href="visualizacao">
                     <span class="icon"><i class="bi bi-columns-gap"></i></span>
-                    <span class="txt-link">Dashboard</span>
+                    <span class="txt-link">Visualização</span>
                 </a>
             </li>
             <li class="item-menu">
@@ -59,15 +59,22 @@
     <div class="forms">
 
         <form action="/cadastroDocAcademico" method="post" enctype="multipart/form-data">
-            <label for="autor">Autor</label><br>
-            <input type="text" id="autor" name="autor"><br>
+
+            <div id="authors-container">
+                <div class="author-group">
+                    <label for="autor">Autores</label><br>
+                    <input type="text" name="autor[]" placeholder="Nome do Autor" required>
+                    <button type="button" class="remove-author" onclick="removeAuthor(this)">Remover</button>
+                    <button type="button" onclick="addAuthor()">Adicionar</button><br>
+                </div>
+            </div>
 
             <label for="titulo">Título</label><br>
             <input type="text" id="titulo" name="titulo"><br>
     
             <label for="ano">Ano</label><br>
-            <input type="number" name="ano" min="1000" max="9999" required><br>
-    
+            <input type="text" id="ano" name="ano" min="1000" max="9999" maxlength="4" pattern="\d{4}" required><br>
+
             <label for="orientador">Orientador</label><br>
             <input type="text" id="orientador" name="orientador"><br>
     

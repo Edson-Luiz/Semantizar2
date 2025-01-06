@@ -37,7 +37,7 @@
             <li class="item-menu">
                 <a href="visualizacao">
                     <span class="icon"><i class="bi bi-columns-gap"></i></span>
-                    <span class="txt-link">Dashboard</span>
+                    <span class="txt-link">Visualização</span>
                 </a>
             </li>
             <li class="item-menu">
@@ -59,20 +59,28 @@
     <div class="forms">
 
         <form action="/cadastroArtigo" method="post" enctype="multipart/form-data">
-            <label for="autor">Autor</label><br>
-            <input type="text" id="autor" name="autor"><br>
+
+            <div id="authors-container">
+                <div class="author-group">
+                    <label for="autor">Autores</label><br>
+                    <input type="text" name="autor[]" placeholder="Nome do Autor" required>
+                    <button type="button" class="remove-author" onclick="removeAuthor(this)">Remover</button>
+                    <button type="button" onclick="addAuthor()">Adicionar</button><br>
+                </div>
+            </div>
+
             <label for="titulo">Titulo</label><br>
-            <input type="text" id="titulo" name="titulo"><br>
+            <input type="text" id="titulo" name="titulo" placeholder="Digite o titulo do artigo"><br>
             <label for="ano">Ano</label><br>
-            <input type="number" name="ano" min="1000" max="9999" required><br>
+            <input type="text" id="ano" name="ano" min="1000" max="9999" maxlength="4" pattern="\d{4}" required><br>
             <label for="revista">Revista</label><br>
-            <input type="text" id="revista" name="revista"><br>
+            <input type="text" id="revista" name="revista" placeholder="Digite o nome da revista"><br>
             <label for="volume">Volume</label><br>
-            <input type="number" id="volume" name="volume"><br>
+            <input type="number" id="volume" name="volume" placeholder="Digite o volume"><br>
             <label for="numero">Numero</label><br>
-            <input type="number" id="numero" name="numero"><br>
+            <input type="number" id="numero" name="numero" placeholder="Digite o numero"><br>
             <label for="paginas">Paginas</label><br>
-            <input type="text" id="paginas" name="paginas"><br>
+            <input type="text" id="paginas" name="paginas" placeholder="Digite a quantidade de páginas"><br>
             <label for="doi">DOI</label><br>
             <input type="text" id="doi" name="doi"><br>
 

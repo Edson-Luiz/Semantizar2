@@ -1,5 +1,6 @@
 # app/routes.py
 from flask import render_template, request, redirect, url_for, flash
+from isbnlib import is_isbn10, is_isbn13, canonical
 from app import *
 
 # Rota para a página inicial
@@ -33,19 +34,43 @@ def cadastro():
 def cadastroLivro():
     if request.method == 'POST':
         try:
+            # Obtendo os dados do formulário
             titulo = request.form['titulo']
-            autor = request.form['autor']
+            autores = request.form.getlist('autor[]')  # Lista de autores
             ano = request.form['ano']
             editora = request.form['editora']
             isbn = request.form['isbn']
 
+            # Validação do ISBN
+            isbn_canonico = canonical(isbn)  # Remove formatações adicionais
+            if not (is_isbn10(isbn_canonico) or is_isbn13(isbn_canonico)):
+                flash("ISBN inválido! Verifique os dados inseridos.", "error")
+                return redirect(url_for('cadastroLivro'))
+
+            # Criando a nova publicação
             nova_publicacao = Publicacao(
                 TituloPublicacao=titulo,
-                AutorPublicacao=autor,
                 AnoPublicacao=ano,
+                AutorPublicacao=", ".join(autores)  # Armazena os autores como string
             )
             db.session.add(nova_publicacao)
-            db.session.flush()  # Obtem o ID da publicacao
+            db.session.flush()  # Obtém o ID da publicação
+
+            # Criando e associando os autores ao livro
+            for autor in autores:
+                # Verifica se o autor já existe, se não, cria um novo autor
+                if autor:
+                    autor_existente = Autor.query.filter_by(NomeAutor=autor).first()
+                    if not autor_existente:
+                        novo_autor = Autor(NomeAutor=autor)
+                        db.session.add(novo_autor)
+                        db.session.flush()  # Obtém o ID do novo autor
+                        autor_existente = novo_autor  # Atualiza a variável autor_existente
+
+                    # Associar o autor à publicação
+                    nova_publicacao.autores.append(autor_existente)
+
+            db.session.commit()
 
             novo_livro = Livro(
                 Editora=editora,
@@ -54,12 +79,18 @@ def cadastroLivro():
             )
             db.session.add(novo_livro)
             db.session.commit()
-            
+
+            # Sucesso
             flash("Cadastro realizado com sucesso!", "success")
             return redirect(url_for('cadastroLivro'))
         except Exception as e:
-            return f"Erro ao cadastrar livro: {e}"
+            flash(f"Erro ao cadastrar livro: {str(e)}", "error")
+            return redirect(url_for('cadastroLivro'))
+
+    # Renderiza o template de cadastro
     return render_template('cadastroLivro.html')
+
+
 
 
 @app.route('/cadastroArtigo', methods=['GET', 'POST'])
