@@ -54,13 +54,19 @@ class DocAcademico(db.Model):
     __tablename__ = 'tbDocAcademico'
 
     IDDocAcademico = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    InstituicaoDefesa = db.Column(db.String(255), nullable=False)
-    TipoDefesa = db.Column(db.String(50), nullable=False)
+    TipoDocAcademico = db.Column(db.String(50), nullable=False)
     IDPublicacao = db.Column(db.Integer, db.ForeignKey('tbPublicacao.IDPublicacao'))
     SiglaUniversidade = db.Column(
         db.String(50), db.ForeignKey('tbUniversidade.SiglaUniversidade')
     )
+    
+    OrientadorDocAcademico = db.Column(db.String(255), nullable=False)  # Obrigatório
+    CoorientadorDocAcademico = db.Column(db.String(255), nullable=True)  # Pode ser nulo
+
     universidade = db.relationship('Universidade', backref='publicacoes')
+
+    # Relacionamento com a tabela de Publicações
+    publicacao = db.relationship('Publicacao', backref='documentos', uselist=False)
 
 class AutorPublicacao(db.Model):
     __tablename__ = 'tbAutorPublicacao'

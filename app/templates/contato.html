@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/forms.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
     <title>Contato - Semantizar2</title>
 </head>
@@ -56,7 +57,24 @@
     
     </nav>
     
-    <p>...</p>
+    
+
+    <div class="container">
+
+        <form action="https://formspree.io/f/myzzbawb" method="POST">
+            <label for="name">Nome</label><br>
+            <input type="text" id="name" name="name" required><br><br>
+            
+            <label for="email">E-mail</label><br>
+            <input type="email" id="email" name="email" required><br><br>
+            
+            <label for="message">Mensagem:</label><br>
+            <textarea id="message" name="message" style="width: 500px; height: 200px;" required></textarea><br>
+            
+            <button type="submit">Enviar</button>
+        </form>
+
+    </div>
     
     <script src="{{ url_for('static', filename='../static/js/script.js') }}"></script>
 </body>

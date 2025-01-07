@@ -218,7 +218,6 @@ p {
 
 .img-publicacao{
 
-
     margin-left: 8rem;
 
 }
@@ -226,7 +225,7 @@ p {
 .img-publicacao img {
     width: 12rem;
     margin-top: 2rem;
-    margin-left: 6rem;
+    margin-left: 17rem;
 }
 
 .img-publicacao span {
@@ -234,6 +233,7 @@ p {
     color: rgb(39, 41, 148);
     font-size: 1.2rem;
     font-weight: bold;
+    margin-left: 10rem;
 
 }
 
