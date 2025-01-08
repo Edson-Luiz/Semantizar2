@@ -85,3 +85,21 @@ label {
 
 }
 
+button#btn-trash {
+
+    background-color: red;
+    border-radius: 35px;
+    padding: 8px;
+
+
+}
+
+button#btn-add {
+
+    background-color: green;
+    border-radius: 35px;
+    padding: 8px;
+
+
+}
+

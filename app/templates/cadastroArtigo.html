@@ -25,7 +25,7 @@
             <li class="item-menu ativo">
                 <a href="/">
                     <span class="icon"><i class="bi bi-house-door"></i></span>
-                    <span class="txt-link">Home</span>
+                    <span class="txt-link">Início</span>
                 </a>
             </li>
             <li class="item-menu">
@@ -64,8 +64,7 @@
                 <div class="author-group">
                     <label for="autor">Autores</label><br>
                     <input type="text" name="autor[]" placeholder="Digite o nome do autor(a)" required>
-                    <button type="button" class="remove-author" onclick="removeAuthor(this)">Remover</button>
-                    <button type="button" onclick="addAuthor()">Adicionar</button><br>
+                    <button type="button" id="btn-add" onclick="addAuthor()"><i class="bi bi-check-circle-fill"></i></button><br>
                 </div>
             </div>
 

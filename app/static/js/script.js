@@ -1,4 +1,6 @@
 
+// CODIGO DO MENU LATERAL
+
 //Seleciona os itens clicado
 var menuItem = document.querySelectorAll('.item-menu')
 
@@ -23,12 +25,13 @@ btnExp.addEventListener('click', function(){
 })
 
 
-
+// CODIGO PARA SELECIONAR O ARQUIVO
 
 document.addEventListener("DOMContentLoaded", function () {
     const dragArea = document.getElementById("drag-area");
     const fileInput = document.getElementById("file");
     const fileNameDisplay = document.getElementById("file-name-display");
+    const form = document.querySelector("form"); // Captura o formulário para obter a rota correta
 
     // Evitar o comportamento padrão ao arrastar/soltar
     ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
@@ -66,47 +69,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (files.length > 0 && files[0].type === "application/pdf") {
             fileNameDisplay.innerHTML = `<p>Arquivo selecionado: ${files[0].name}</p>`;
+            sendFileToServer(files[0]);  // Chama a função para enviar o arquivo ao servidor
         } else {
             fileNameDisplay.innerHTML = `<p style="color: red;">Por favor, envie apenas arquivos PDF.</p>`;
             fileInput.value = ""; // Resetar o input
         }
     });
-});
 
+    // Função para enviar o arquivo para o servidor
+    function sendFileToServer(file) {
+        const formData = new FormData();
+        formData.append("file", file);  // Adiciona o arquivo no FormData
 
-
-
-document.getElementById('adicionar-termo').addEventListener('click', function () {
-    const termoInput = document.getElementById('termo-input');
-    const termo = termoInput.value.trim();
-
-    if (termo !== '') {
-        adicionarTermo(termo);
-        termoInput.value = '';
-        termoInput.focus();
-    } else {
-        alert('Por favor, insira um termo válido.');
+        // Envia a requisição para o servidor usando fetch
+        fetch(form.action, {  // Usa a ação do formulário para a URL da rota correta
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Arquivo enviado com sucesso:", data);
+            // Aqui você pode tratar a resposta do servidor, como exibir uma mensagem
+        })
+        .catch(error => {
+            console.error("Erro ao enviar o arquivo:", error);
+        });
     }
 });
 
-function adicionarTermo(termo) {
-    const listaTermos = document.getElementById('lista-termos');
-    const li = document.createElement('li');
-    li.innerHTML = `
-        <span>${termo}</span>
-        <button onclick="removerTermo(this)">Remover</button>
-    `;
-    listaTermos.appendChild(li);
-}
 
-function removerTermo(button) {
-    const li = button.parentElement;
-    li.remove();
-}
-
-
-
-
+// CÓDIGO PARA ADICIONAR MAIS AUTORES
 
 function addAuthor() {
     const container = document.getElementById('authors-container');
@@ -117,13 +109,14 @@ function addAuthor() {
     const newInput = document.createElement('input');
     newInput.type = 'text';
     newInput.name = 'autor[]';
-    newInput.placeholder = 'Nome do Autor';
+    newInput.placeholder = 'Digite o nome do autor(a)';
     newInput.required = true;
 
     // Cria o botão de remover
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
-    removeButton.textContent = 'Remover';
+    removeButton.id = 'btn-trash';
+    removeButton.innerHTML = '<i class="bi bi-trash-fill"></i>';
     removeButton.classList.add('remove-author');
     removeButton.onclick = function() { removeAuthor(removeButton); };
 
@@ -136,4 +129,60 @@ function addAuthor() {
 function removeAuthor(button) {
     // Remove o grupo de autor que contém o botão de remoção
     button.parentElement.remove();
+}
+
+
+
+
+
+
+
+const termos = [];  // Vetor para armazenar os termos adicionados
+const termoInput = document.getElementById("termoInput");
+const termosLista = document.getElementById("termosLista");
+const finalizarBtn = document.getElementById("finalizarBtn");
+
+// Função para adicionar termo
+function adicionarTermo() {
+    const termo = termoInput.value.trim();
+
+    if (termo && !termos.includes(termo)) {
+        termos.push(termo);
+        atualizarListaTermos();
+        termoInput.value = "";  // Limpar campo de input
+        termoInput.focus();
+    }
+}
+
+// Função para remover um termo
+function removerTermo(index) {
+    termos.splice(index, 1);
+    atualizarListaTermos();
+}
+
+// Função para atualizar a lista de termos
+function atualizarListaTermos() {
+    termosLista.innerHTML = "";  // Limpar a lista antes de atualizar
+    termos.forEach((termo, index) => {
+        const li = document.createElement("li");
+        li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+        li.textContent = termo;
+
+        const excluirBtn = document.createElement("button");
+        excluirBtn.classList.add("btn", "btn-danger", "btn-sm");
+        excluirBtn.textContent = "X";
+        excluirBtn.onclick = () => removerTermo(index);
+
+        li.appendChild(excluirBtn);
+        termosLista.appendChild(li);
+    });
+
+    // Habilitar o botão de finalizar se houver termos
+    finalizarBtn.disabled = termos.length === 0;
+}
+
+// Função para finalizar o cadastro
+function finalizarCadastro() {
+    alert("Cadastro Finalizado!");  // Pode ser substituído por uma chamada para enviar os dados ao backend
+    console.log(termos);  // Aqui você pode enviar os termos para o backend
 }

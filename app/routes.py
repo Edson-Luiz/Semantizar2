@@ -3,6 +3,29 @@ from flask import render_template, request, redirect, url_for, flash
 from isbnlib import is_isbn10, is_isbn13, canonical
 import requests
 from app import *
+import os
+from werkzeug.utils import secure_filename
+
+
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+def save_file(file):
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
+        # Criar o diretório de uploads, se necessário
+        if not os.path.exists(app.config['UPLOAD_FOLDER']):
+            os.makedirs(app.config['UPLOAD_FOLDER'])
+        
+        file.save(filepath)
+        return filepath
+    return None
+
 
 # Rota para a página inicial
 @app.route('/')
@@ -30,6 +53,12 @@ def contato():
 @app.route('/cadastro')
 def cadastro():
     return render_template('cadastro.html')
+
+@app.route('/cadastroTermos')
+def cadastroTermos():
+    return render_template('cadastroTermos.html')
+
+
 
 @app.route('/cadastroLivro', methods=['GET', 'POST'])
 def cadastroLivro():
@@ -81,9 +110,21 @@ def cadastroLivro():
             db.session.add(novo_livro)
             db.session.commit()
 
-            # Sucesso
-            flash("Cadastro realizado com sucesso!", "success")
-            return redirect(url_for('cadastroLivro'))
+            if 'file' not in request.files:
+                flash("Nenhum arquivo enviado", "error")
+                return redirect(url_for('cadastroLivro'))
+    
+            file = request.files['file']
+            filepath = save_file(file)
+    
+            if filepath:
+                # Sucesso no cadastro do arquivo
+                flash("Cadastro realizado com sucesso!", "success")
+                return redirect(url_for('cadastroTermos'))  # Redireciona para a tela de termos
+            else:
+                flash("Arquivo inválido, envie um PDF", "error")
+                return redirect(url_for('cadastroLivro'))  # Retorna para a tela de cadastro com erro
+
         except Exception as e:
             flash(f"Erro ao cadastrar livro: {str(e)}", "error")
             return redirect(url_for('cadastroLivro'))
@@ -148,7 +189,7 @@ def cadastroArtigo():
             db.session.commit()
 
             flash("Cadastro realizado com sucesso!", "success")
-            return redirect(url_for('cadastroArtigo'))
+            return redirect(url_for('cadastroTermos'))
         except Exception as e:
             db.session.rollback()
             return f"Erro ao cadastrar artigo: {e}"
@@ -213,7 +254,7 @@ def cadastroDocAcademico():
                 db.session.commit()
 
             flash("Cadastro realizado com sucesso!", "success")
-            return redirect(url_for('cadastroDocAcademico'))
+            return redirect(url_for('cadastroTermos'))
         except Exception as e:
             return f"Erro ao cadastrar documento acadêmico: {e}"
     return render_template('cadastroDocAcademico.html')
