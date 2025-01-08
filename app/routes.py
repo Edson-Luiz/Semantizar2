@@ -59,7 +59,6 @@ def cadastroTermos():
     return render_template('cadastroTermos.html')
 
 
-
 @app.route('/cadastroLivro', methods=['GET', 'POST'])
 def cadastroLivro():
     if request.method == 'POST':
@@ -131,6 +130,7 @@ def cadastroLivro():
 
     # Renderiza o template de cadastro
     return render_template('cadastroLivro.html')
+
 
 @app.route('/cadastroArtigo', methods=['GET', 'POST'])
 def cadastroArtigo():
