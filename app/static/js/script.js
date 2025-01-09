@@ -170,7 +170,8 @@ function atualizarListaTermos() {
 
         const excluirBtn = document.createElement("button");
         excluirBtn.classList.add("btn", "btn-danger", "btn-sm");
-        excluirBtn.textContent = "X";
+        excluirBtn.id = 'btn-trash';
+        excluirBtn.innerHTML = '<i class="bi bi-trash-fill"></i>';
         excluirBtn.onclick = () => removerTermo(index);
 
         li.appendChild(excluirBtn);
