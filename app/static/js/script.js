@@ -132,12 +132,9 @@ function removeAuthor(button) {
 }
 
 
+// CODIGO DE ADICIONAR TERMOS
 
-
-
-
-
-const termos = [];  // Vetor para armazenar os termos adicionados
+const termos = []; // Vetor para armazenar os termos adicionados
 const termoInput = document.getElementById("termoInput");
 const termosLista = document.getElementById("termosLista");
 const finalizarBtn = document.getElementById("finalizarBtn");
@@ -149,7 +146,7 @@ function adicionarTermo() {
     if (termo && !termos.includes(termo)) {
         termos.push(termo);
         atualizarListaTermos();
-        termoInput.value = "";  // Limpar campo de input
+        termoInput.value = ""; // Limpar campo de input
         termoInput.focus();
     }
 }
@@ -162,7 +159,7 @@ function removerTermo(index) {
 
 // Função para atualizar a lista de termos
 function atualizarListaTermos() {
-    termosLista.innerHTML = "";  // Limpar a lista antes de atualizar
+    termosLista.innerHTML = ""; // Limpar a lista antes de atualizar
     termos.forEach((termo, index) => {
         const li = document.createElement("li");
         li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
@@ -184,6 +181,29 @@ function atualizarListaTermos() {
 
 // Função para finalizar o cadastro
 function finalizarCadastro() {
-    alert("Cadastro Finalizado!");  // Pode ser substituído por uma chamada para enviar os dados ao backend
-    console.log(termos);  // Aqui você pode enviar os termos para o backend
+    if (termos.length === 0) {
+        alert("Adicione ao menos um termo antes de finalizar!");
+        return;
+    }
+
+    // Envia os termos para o backend usando fetch
+    fetch("/salvar_termos", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ termos }) // Envia os termos no corpo da requisição
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Termos enviados com sucesso!");
+            console.log("Termos enviados:", termos);
+        } else {
+            alert("Erro ao enviar os termos.");
+        }
+    })
+    .catch(error => {
+        console.error("Erro na requisição:", error);
+        alert("Erro ao enviar os termos.");
+    });
 }

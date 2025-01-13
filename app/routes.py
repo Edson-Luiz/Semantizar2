@@ -59,6 +59,20 @@ def cadastroTermos():
     return render_template('cadastroTermos.html')
 
 
+@app.route('/salvar_termos', methods=['POST'])
+def salvar_termos():
+    data = request.get_json()  # Obtém os dados enviados como JSON
+    termos = data.get('termos', [])  # Extrai o vetor de termos
+
+    if not termos:
+        return jsonify({"error": "Nenhum termo foi enviado."}), 400
+
+    # Aqui você pode processar os termos (ex: salvar no banco de dados)
+    print("Termos recebidos:", termos)
+
+    # Retorna uma resposta de sucesso
+    return jsonify({"message": "Termos recebidos com sucesso!", "termos": termos}), 200
+        
 @app.route('/cadastroLivro', methods=['GET', 'POST'])
 def cadastroLivro():
     if request.method == 'POST':

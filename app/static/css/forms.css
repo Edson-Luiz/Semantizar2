@@ -99,7 +99,14 @@ button#btn-add {
     background-color: green;
     border-radius: 35px;
     padding: 8px;
+    margin: 0;
 
+
+}
+
+button#finalizarBtn {
+
+    margin-left: 40px;
 
 }
 
