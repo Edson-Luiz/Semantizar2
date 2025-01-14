@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = '9xCq0VHwlW16Pv7CIXWX'
 
 # Configuração do banco de dados MySQL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:edsonabc12312@localhost/semantizar2_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:semant1401@localhost/semantizar2_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Inicializa o banco de dados (SQLAlchemy)
