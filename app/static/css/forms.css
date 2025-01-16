@@ -61,7 +61,7 @@ input[name="ano"] {
 button {
     
     margin-top: 30px;
-    background-color: rgb(39, 41, 148); /* Cor padrão */
+    background-color: #4c66af; /* Cor padrão */
     color: white; /* Texto branco */
     border: none; /* Sem borda */
     padding: 10px 10px; /* Espaçamento interno */
@@ -74,7 +74,7 @@ button {
 
 button:hover {
 
-    background-color: rgb(30, 5, 117);
+    background-color: rgb(26, 39, 155);
 
 }
 

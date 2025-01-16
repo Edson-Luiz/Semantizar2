@@ -11,7 +11,7 @@
 <body>
     <header>
         <a href="/">
-            <h1>SEMANTIZAR</h1>
+            <h1><img src="{{ url_for('static', filename='img/semantizar2logo.png') }}" alt="Logo do Semantizar com um ícone representando análise de texto" width="300"></h1>
         </a>
     </header>
 
@@ -64,18 +64,18 @@
                 <div class="author-group">
                     <label for="autor">Autores</label><br>
                     <input type="text" name="autor[]" placeholder="Digite o nome do autor(a)" required>
-                    <button type="button" id="btn-add" onclick="addAuthor()"><i class="bi bi-check-circle-fill"></i></button><br>
+                    <button type="button" id="btn-add" title="Clique aqui para adicionar mais autores" onclick="addAuthor()"><i class="bi bi-check-circle-fill"></i></button><br>
                 </div>
             </div>
  
             <label for="titulo">Título</label><br>
-            <input type="text" id="titulo" name="titulo" placeholder="Digite o titulo do livro"><br>
+            <input type="text" id="titulo" name="titulo" placeholder="Digite o titulo do livro" required><br>
         
             <label for="ano">Ano</label><br>
             <input type="text" id="ano" name="ano" min="1000" max="9999" maxlength="4" pattern="\d{4}" required><br>
         
             <label for="editora">Editora</label><br>
-            <input type="text" id="editora" name="editora" placeholder="Digite o nome da Editora"><br>
+            <input type="text" id="editora" name="editora" placeholder="Digite o nome da Editora" required><br>
         
             <label for="isbn">ISBN</label><br> 
             <input  type="text" id="isbn" name="isbn" pattern="\d{10}|\d{13}" title="Digite um ISBN válido (10 ou 13 dígitos)" placeholder="Digite o ISBN" required><br>
