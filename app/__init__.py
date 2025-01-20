@@ -84,7 +84,77 @@ class Autor(db.Model):
     publicacoes = db.relationship('Publicacao', secondary='tbAutorPublicacao', back_populates='autores')
 
 
+# Modelo para a tabela tbSubstantivo
+class Substantivo(db.Model):
+    __tablename__ = 'tbSubstantivo'
 
+    IDSubstantivo = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    NomeSubstantivo = db.Column(db.String(255), nullable=False, unique=True)
+
+    # Relacionamento com tbRelacao
+    relacoes_sujeito = db.relationship('Relacao', backref='substantivo_sujeito', foreign_keys='Relacao.IDPalavraSujeito', lazy=True)
+    relacoes_objeto = db.relationship('Relacao', backref='substantivo_objeto', foreign_keys='Relacao.IDPalavraObjeto', lazy=True)
+
+    def __repr__(self):
+        return f"<Substantivo(ID={self.IDSubstantivo}, Nome='{self.NomeSubstantivo}')>"
+
+# Modelo para a tabela tbRelacao
+class Relacao(db.Model):
+    __tablename__ = 'tbRelacao'
+
+    IDRelacao = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    IDPalavraSujeito = db.Column(db.Integer, db.ForeignKey('tbSubstantivo.IDSubstantivo'), nullable=False)
+    Predicado = db.Column(db.String(255), nullable=False)
+    IDPalavraObjeto = db.Column(db.Integer, db.ForeignKey('tbSubstantivo.IDSubstantivo'), nullable=False)
+    IDTipoRelacao = db.Column(db.Integer, db.ForeignKey('tbTipoRelacao.IDTipoRelacao'), nullable=True)
+    RelacaoInversa = db.Column(db.String(255), nullable=True)
+    Simetrica = db.Column(db.Boolean, nullable=True, default=False)
+    Reflexiva = db.Column(db.Boolean, nullable=True, default=False)
+
+    # Relacionamento com tbTipoRelacao (opcional)
+    tipo_relacao = db.relationship('TipoRelacao', backref='relacoes', lazy=True)
+
+    # Relacionamento com tbPublicacaoRelacao
+    publicacao_relacoes = db.relationship('PublicacaoRelacao', backref='relacao', lazy=True)
+
+    def __repr__(self):
+        return f"<Relacao(ID={self.IDRelacao}, Sujeito={self.IDPalavraSujeito}, Predicado='{self.Predicado}', Objeto={self.IDPalavraObjeto})>"
+
+# Modelo para a tabela tbTipoRelacao
+class TipoRelacao(db.Model):
+    __tablename__ = 'tbTipoRelacao'
+
+    IDTipoRelacao = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    NomeTipoRelacao = db.Column(db.String(255), nullable=False)
+    subTipoRelacaoDe = db.Column(db.Integer, db.ForeignKey('tbTipoRelacao.IDTipoRelacao'), nullable=True)
+
+    def __repr__(self):
+        return f"<TipoRelacao(ID={self.IDTipoRelacao}, Nome='{self.NomeTipoRelacao}')>"
+
+# Modelo para a tabela tbPublicacaoRelacao
+class PublicacaoRelacao(db.Model):
+    __tablename__ = 'tbPublicacaoRelacao'
+
+    IDRelacao = db.Column(db.Integer, db.ForeignKey('tbRelacao.IDRelacao'), primary_key=True)
+    IDPublicacao = db.Column(db.Integer, db.ForeignKey('tbPublicacao.IDPublicacao'), primary_key=True)
+
+    # Relacionamento com tbPublicacao
+    publicacao = db.relationship('Publicacao', backref='publicacao_relacoes', lazy=True)
+
+    def __repr__(self):
+        return f"<PublicacaoRelacao(IDRelacao={self.IDRelacao}, IDPublicacao={self.IDPublicacao})>"
+
+# Modelo para a tabela tbPublicacao
+class Publicacao(db.Model):
+    __tablename__ = 'tbPublicacao'
+
+    IDPublicacao = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    TituloPublicacao = db.Column(db.String(255), nullable=False)
+    AnoPublicacao = db.Column(db.Integer, nullable=False)
+    AutorPublicacao = db.Column(db.String(255), nullable=False)
+
+    def __repr__(self):
+        return f"<Publicacao(ID={self.IDPublicacao}, Titulo='{self.TituloPublicacao}')>"
 
 from app import routes
 # Inicializa o banco e roda o app

@@ -14,18 +14,83 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 def save_file(file):
-    if file and allowed_file(file.filename):
-        filename = secure_filename(file.filename)
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        
-        # Criar o diretório de uploads, se necessário
-        if not os.path.exists(app.config['UPLOAD_FOLDER']):
-            os.makedirs(app.config['UPLOAD_FOLDER'])
-        
-        file.save(filepath)
-        return filepath
-    return None
+    try:
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            
+            # Criar o diretório de uploads, se necessário
+            if not os.path.exists(app.config['UPLOAD_FOLDER']):
+                os.makedirs(app.config['UPLOAD_FOLDER'])
+            
+            file.save(filepath)
+            return filepath
+        return None
+    except Exception as e:
+        print(f"Erro ao salvar arquivo: {e}")
+        return None
+    
 
+@app.route('/processar_relacoes', methods=['POST'])
+def processar_relacoes():
+    try:
+        # Obtendo o ID do último livro (ou de um livro selecionado)
+        livro_id = request.json.get('livro_id')  # Recebido no body da requisição
+
+        # Buscar o livro no banco de dados
+        livro = Livro.query.get(livro_id)
+        if not livro:
+            return jsonify({"error": "Livro não encontrado"}), 404
+
+        # Obter o vetor de termos do banco de dados
+        termos = [termo.NomeTermo for termo in Termo.query.filter_by(IDLivro=livro_id).all()]
+        if not termos:
+            return jsonify({"error": "Nenhum termo encontrado para este livro"}), 400
+
+        # Caminho do arquivo PDF
+        pdf_path = livro.CaminhoPDF
+
+        # Rodar o algoritmo do utils.py
+        from utils import processar_pdf_e_termos
+        relacoes = processar_pdf_e_termos(pdf_path, termos)
+
+        # Salvar as relações no banco para validação
+        for relacao in relacoes:
+            nova_relacao = Relacao(
+                Termo1=relacao['termo1'],
+                Termo2=relacao['termo2'],
+                Frase=relacao['frase'],
+                IDLivro=livro_id,
+                Validada=False  # Inicialmente, todas as relações não estão validadas
+            )
+            db.session.add(nova_relacao)
+        db.session.commit()
+
+        return jsonify({
+            "message": "Relações processadas com sucesso!",
+            "relacoes": relacoes
+        }), 200
+
+    except Exception as e:
+        return jsonify({"error": f"Erro ao processar relações: {str(e)}"}), 500
+    
+
+@app.route('/validar_relacoes', methods=['POST'])
+def validar_relacoes():
+    try:
+        data = request.get_json()  # Dados enviados pelo front-end
+        validacoes = data.get('relacoes', [])  # Lista de relações validadas/rejeitadas
+
+        for validacao in validacoes:
+            relacao = Relacao.query.get(validacao['id'])
+            if relacao:
+                relacao.Validada = validacao['validada']  # True ou False
+        db.session.commit()
+
+        return jsonify({"message": "Relações validadas com sucesso!"}), 200
+
+    except Exception as e:
+        return jsonify({"error": f"Erro ao validar relações: {str(e)}"}), 500
 
 # Rota para a página inicial
 @app.route('/')

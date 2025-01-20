@@ -207,6 +207,11 @@ h1 {
     
 }
 
+h2 {
+    font-size: 24px;
+    margin-bottom: 20px; /* Adiciona espaço entre o título e os itens */
+}
+
 a {
     text-decoration: none;
 }
@@ -427,3 +432,36 @@ table {
     background-color: darkred;
 }
 
+.cadastroimg {
+    display: flex; /* Usando Flexbox */
+    justify-content: center; /* Centraliza os itens horizontalmente */
+    gap: 150px; /* Espaçamento entre os itens */
+    flex-wrap: wrap; /* Permite quebra de linha em telas menores */
+    margin-top: 130px;
+}
+
+.item {
+    display: flex;
+    flex-direction: column; /* Texto em cima, imagem embaixo */
+    align-items: center; /* Centraliza os itens */
+     /* Largura máxima de cada item */
+}
+
+.item span {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 10px; /* Espaço entre o texto e a imagem */
+}
+
+.custom-icon {
+    font-size: 100px; /* Ajusta o tamanho do ícone */
+    color: #4c66af;
+    
+}
+
+.custom-icon:hover {
+    transform: rotate(360deg);
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    color: rgb(26, 39, 155);
+    
+}
