@@ -2,7 +2,7 @@
 from flask import render_template, request, redirect, url_for, flash
 from isbnlib import is_isbn10, is_isbn13, canonical
 import requests
-from app import *
+from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo
 import os
 from werkzeug.utils import secure_filename
 

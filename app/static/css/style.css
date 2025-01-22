@@ -437,7 +437,7 @@ table {
     justify-content: center; /* Centraliza os itens horizontalmente */
     gap: 150px; /* Espaçamento entre os itens */
     flex-wrap: wrap; /* Permite quebra de linha em telas menores */
-    margin-top: 130px;
+    margin-top: 80px;
 }
 
 .item {

@@ -48,16 +48,18 @@ def buscar_relacoes(frases, pares_termos, limite_relacoes=None):
     return relacoes_identificadas
 
 # Função para salvar as relações em um arquivo JSON
+"""
 def salvar_relacoes_em_json(relacoes, caminho_arquivo):
-    """
-    Salva as relações identificadas em um arquivo JSON.
-    """
+    
+    #Salva as relações identificadas em um arquivo JSON.
+    
     try:
         with open(caminho_arquivo, "w", encoding="utf-8") as arquivo:
             json.dump(relacoes, arquivo, indent=4, ensure_ascii=False)
         print(f"Relações salvas com sucesso em {caminho_arquivo}")
     except Exception as e:
         print(f"Erro ao salvar relações: {e}")
+"""
 
 # Função principal
 def executar_busca(caminho_pdf, vetor_termos, caminho_saida="relacoes_identificadas.json", limite_relacoes=None):
@@ -82,6 +84,7 @@ def executar_busca(caminho_pdf, vetor_termos, caminho_saida="relacoes_identifica
     print(">>> Processo concluído com sucesso!")
 
 # Exemplo de uso
+"""
 if __name__ == "__main__":
     # Caminho do PDF
     caminho_pdf = "exemplo.pdf"  # Substitua pelo seu arquivo PDF
@@ -94,3 +97,4 @@ if __name__ == "__main__":
 
     # Executar o fluxo
     executar_busca(caminho_pdf, vetor_termos, caminho_saida, limite_relacoes=10)
+"""
