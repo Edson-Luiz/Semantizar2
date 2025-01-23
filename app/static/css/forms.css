@@ -5,8 +5,10 @@
 
 .forms {
 
-    flex: 1; /* Ocupará o espaço restante da tela, empurrando o footer para baixo se necessário */
-    max-width: 100vw; /* Impede que a largura ultrapasse o tamanho da tela */
+    flex: 1;
+    /* Ocupará o espaço restante da tela, empurrando o footer para baixo se necessário */
+    max-width: 100vw;
+    /* Impede que a largura ultrapasse o tamanho da tela */
     width: 80%;
     margin: 0 auto;
     padding: 1rem;
@@ -23,32 +25,67 @@ input {
     margin-bottom: 15px;
     width: 30%;
     padding: 3px;
-    
-    
+
+
 }
 
 .radio-group {
     display: flex;
     align-items: center;
-    gap: 2px; /* Espaçamento entre o botão de rádio e o texto */
-    margin-bottom: 5px; /* Espaço entre os grupos de botões */
+    gap: 2px;
+    /* Espaçamento entre o botão de rádio e o texto */
+    margin-bottom: 5px;
+    /* Espaço entre os grupos de botões */
     margin-top: 10px;
 }
 
 input[type="radio"] {
-    accent-color: #007bff; /* Personaliza a cor do botão de rádio */
-    margin: 0; /* Remove margens padrões */
-    cursor: pointer; /* Cursor clicável */
+    accent-color: #007bff;
+    /* Personaliza a cor do botão de rádio */
+    margin: 0;
+    /* Remove margens padrões */
+    cursor: pointer;
+    /* Cursor clicável */
     width: 12px;
     margin-left: 3px;
-    
+
 
 }
 
 input[name="ano"] {
 
     width: 60px;
- 
+
+}
+
+input[name="autor[]"] {
+
+    width: 500px;
+
+}
+
+input[name="titulo"] {
+
+    width: 500px;
+
+}
+
+input[name="isbn"] {
+
+    width: 103px;
+
+}
+
+input[name="volume"] {
+
+    width: 131px;
+
+}
+
+input[name="numero"] {
+
+    width: 131px;
+
 }
 
 .radio-group label {
@@ -60,15 +97,22 @@ input[name="ano"] {
 }
 
 button {
-    
+
     margin-top: 30px;
-    background-color: #4c66af; /* Cor padrão */
-    color: white; /* Texto branco */
-    border: none; /* Sem borda */
-    padding: 10px 10px; /* Espaçamento interno */
-    border-radius: 5px; /* Bordas arredondadas */
-    cursor: pointer; /* Mãozinha ao passar o mouse */
-    transition: background-color 0.3s ease; /* Animação suave */
+    background-color: #4c66af;
+    /* Cor padrão */
+    color: white;
+    /* Texto branco */
+    border: none;
+    /* Sem borda */
+    padding: 10px 10px;
+    /* Espaçamento interno */
+    border-radius: 5px;
+    /* Bordas arredondadas */
+    cursor: pointer;
+    /* Mãozinha ao passar o mouse */
+    transition: background-color 0.3s ease;
+    /* Animação suave */
 
 
 }
@@ -111,4 +155,3 @@ button#finalizarBtn {
     margin-left: 40px;
 
 }
-

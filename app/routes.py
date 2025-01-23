@@ -62,6 +62,10 @@ def cadastro():
 def cadastroTermos():
     return render_template('cadastroTermos.html')
 
+@app.route('/processoExtracaoSemantica')
+def processoExtracaoSemantica():
+    return render_template('processoExtracaoSemantica.html')
+
 
 @app.route('/salvar_termos', methods=['POST'])
 def salvar_termos():
@@ -160,7 +164,6 @@ def cadastroArtigo():
             revista = request.form['revista']
             volume = int(request.form['volume'])
             numero = int(request.form['numero'])
-            paginas = request.form['paginas']
             doi = request.form['doi']
 
             # Verificação do DOI
@@ -199,7 +202,6 @@ def cadastroArtigo():
                 Revista=revista,
                 Volume=volume,
                 Numero=numero,
-                Paginas=paginas,
                 DOI=doi,
                 IDPublicacao=nova_publicacao.IDPublicacao
             )

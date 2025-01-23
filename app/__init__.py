@@ -65,7 +65,6 @@ class Artigo(db.Model):
     Revista = db.Column(db.String(255), nullable=False)
     Volume = db.Column(db.Integer)
     Numero = db.Column(db.Integer)
-    Paginas = db.Column(db.String(50))
     DOI = db.Column(db.String(255))
     IDPublicacao = db.Column(db.Integer,
                              db.ForeignKey('tbPublicacao.IDPublicacao'))
@@ -74,7 +73,6 @@ class Artigo(db.Model):
         self.Revista = Revista
         self.Volume = Volume
         self.Numero = Numero
-        self.Paginas = Paginas
         self.DOI = DOI
         self.IDPublicacao = IDPublicacao
 
