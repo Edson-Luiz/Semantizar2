@@ -11,56 +11,20 @@
 <body>
     <header>
         <a href="/">
-            <h1><img src="{{ url_for('static', filename='img/semantizar2logo.png') }}" alt="Logo do Semantizar com um ícone representando análise de texto" width="300"></h1>
+            <h1><img src="{{ url_for('static', filename='img/semantizar2logo.png') }}" alt="Logo do Semantizar com um ícone representando análise de texto" width="400"></h1>
         </a>
     </header>
 
-    <nav class="menu-lateral">
-
-        <div class="btn-expandir">
-            <i class="bi bi-list" id="btn-exp"></i>
-        </div><!--btn-expandir-->
-    
-        <ul>
-            <li class="item-menu ativo">
-                <a href="/" title="Inicio">
-                    <span class="icon"><i class="bi bi-house-door"></i></span>
-                    <span class="txt-link">Início</span>
-                </a>
-            </li>
-            <li class="item-menu">
-                <a href="cadastro" title="Cadastrar">
-                    <span class="icon"><i class="bi bi-clipboard2-check"></i></i></span>
-                    <span class="txt-link">Cadastrar</span>
-                </a>
-            </li>
-            <li class="item-menu">
-                <a href="visualizacao" title="Visualização">
-                    <span class="icon"><i class="bi bi-columns-gap"></i></span>
-                    <span class="txt-link">Visualização</span>
-                </a>
-            </li>
-            <li class="item-menu">
-                <a href="sobre" title="Sobre">
-                    <span class="icon"><i class="bi bi-info-circle"></i></i></span>
-                    <span class="txt-link">Sobre</span>
-                </a>
-            </li>
-            <li class="item-menu">
-                <a href="contato" title="Contato">
-                    <span class="icon"><i class="bi bi-person-fill"></i></i></i></span>
-                    <span class="txt-link">Contato</span>
-                </a>
-            </li>
-    
-    </nav>
-
+    {% include 'nav.html' %}
 
     <div class="forms">
 
         <h2>Cadastro de artigo</h2>
 
         <form action="/cadastroArtigo" method="post" enctype="multipart/form-data">
+
+            <label for="titulo">Titulo</label><br>
+            <input type="text" id="titulo" name="titulo" placeholder="Digite o titulo do artigo"><br>
 
             <div id="authors-container">
                 <div class="author-group">
@@ -70,8 +34,6 @@
                 </div>
             </div>
 
-            <label for="titulo">Titulo</label><br>
-            <input type="text" id="titulo" name="titulo" placeholder="Digite o titulo do artigo"><br>
             <label for="ano">Ano</label><br>
             <input type="text" id="ano" name="ano" min="1000" max="9999" maxlength="4" pattern="\d{4}" required><br>
             <label for="revista">Revista</label><br>
@@ -115,7 +77,7 @@
     
 
     <footer>
-        <p>&copy; 2024 Semantizar 2. Todos os direitos reservados.</p>
+        <p>&copy; 2025 Semantizar 2. Todos os direitos reservados.</p>
     </footer>
 
     <script src="{{ url_for('static', filename='../static/js/script.js') }}"></script>

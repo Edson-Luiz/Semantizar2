@@ -13,7 +13,7 @@ html, body {
     height: 100%;
     width: 100%;
     overflow-x: hidden; /* Impede rolagem lateral */
-    background-color: #f4f4f4;
+    background-color: #ffffff;
 }
 
 body {
@@ -27,9 +27,9 @@ body {
 
 header {
     color: #4715ce; /* Garante que o texto no header fique branco */
-    padding: 1rem;
+    padding: 0.6rem;
     text-align: center;
-    
+
 }
 
 nav.menu-lateral{
@@ -115,9 +115,9 @@ ul li.item-menu a .icon > i{
     max-width: 100vw; /* Impede que a largura ultrapasse o tamanho da tela */
     width: 80%;
     margin: 0 auto;
-    padding: 2rem;
-    margin-bottom: 5rem;
-    
+    padding: 0rem;
+    margin-bottom: 10rem;
+
 }
 
 .validacao {
@@ -163,10 +163,8 @@ ul li.item-menu a .icon > i{
 .validacao-text a{
     
     margin-left: 10px;
-    
 
 }
-
 
 .tabela {
 
@@ -210,6 +208,12 @@ h1 {
 h2 {
     font-size: 24px;
     margin-bottom: 20px; /* Adiciona espaço entre o título e os itens */
+}
+
+.h2-index {
+
+    text-align: center;
+    margin-bottom: 50px;
 }
 
 a {
@@ -273,7 +277,7 @@ p {
 }
     
 .button {
-    display: inline-block;
+    display: flex;
     padding: 0.5rem 1rem;
     margin: 1rem 0;
     background-color: #4c66af;
@@ -284,7 +288,29 @@ p {
     text-decoration: none;
     font-size: 1rem;
     transition: background-color 0.3s ease;
+    justify-content: center;
+    width: 150px;
+    margin: 0 auto;
+    margin-top: 5px;
 }
+
+.link-container {
+    display: flex; /* Alinha os itens em linha */
+    justify-content: space-between; /* Um link à esquerda, outro à direita */
+    align-items: center; /* Centraliza verticalmente, se necessário */
+    margin-top: 20px;
+  }
+  
+  .link {
+    text-decoration: underline; /* Sublinha o texto */
+    color: #000; /* Define a cor do texto */
+    font-size: 16px; /* Define o tamanho da fonte */
+    transition: color 0.3s ease; /* Transição suave para o hover */
+  }
+  
+  .link:hover {
+    color: #4c66af; /* Muda a cor do texto ao passar o mouse */
+  }
 
 .button:hover {
     background-color: rgb(26, 39, 155);
