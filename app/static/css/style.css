@@ -9,11 +9,14 @@
     font-family: "Poppins", sans-serif;
 }
 
+
 html, body {
     height: 100%;
     width: 100%;
     overflow-x: hidden; /* Impede rolagem lateral */
-    background-color: #ffffff;
+    background: linear-gradient(to right, #f2f2fc, #e4e7f3);  /* Degradê do azul para o branco */
+    background-size: cover;  /* Garante que o fundo cubra toda a tela */
+    background-position: center;  /* Centraliza o fundo */
 }
 
 body {
@@ -25,99 +28,101 @@ body {
     color: #333;
 }
 
+/* Default styles for the browser */
+*{
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+}
+
 header {
-    color: #4715ce; /* Garante que o texto no header fique branco */
-    padding: 0.6rem;
-    text-align: center;
-
+    width: 100vw;
+    height: 70px;
+    background: linear-gradient(to top, #406adf, #5069bb);
+    border-bottom: solid 1px rgba(1, 225, 255, 0.1);
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center; /* Centraliza a div `.inner` */
 }
 
-nav.menu-lateral{
-    width: 80px;
-    height: 100%;
-    background-color: #202020;
-    padding: 40px 0 40px 1%;
-    box-shadow: 3px 0 0 #4715ce;
-    position: fixed;
-    top: 0;
-    left: 0;
-    overflow: hidden;
-    transition: .5s;
-    z-index: 1000;
+header .inner {
+    width: 1300px; 
+    display: flex;
+    align-items: center;
 }
 
-nav.menu-lateral.expandir{
-    width: 300px;
+header .logo {
+    display: flex;
+    align-items: center; /* Alinha a logo verticalmente */
 }
 
-.btn-expandir{
-    width: 100%;
-    padding-left: 10px;
+header .logo img {
+    height: 60px;
+    margin-top: 5px;
+    margin-right: 50px; /* Espaço entre a logo e os outros elementos */
 }
 
-.btn-expandir > i{
-    color: #fff;
-    font-size: 24px;
-    cursor: pointer;
-    position: relative;
-    top: -20px;
-    left: 2px
-
-
+header nav {
+    display: flex;
+    align-items: center;
 }
+
+header nav ul {
+    display: flex;
+    list-style: none; /* Remove os marcadores padrão da lista */
+    padding: 0;
+    margin: 0;
+}
+
+header nav li {
+    margin-right: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+header nav li:last-of-type {
+    margin-right: 0;
+}
+
+header nav a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
 
 ul{
     height: 100%;
     list-style-type: none;
 }
 
-ul li.item-menu{
-    transition: .2s;
-}
-
-ul li.ativo{
-    background-color: #4715ce;
-}
-
-ul li.item-menu:hover{
-    background: #4715ce;
-}
-
-ul li.item-menu a{
-    color: #fff;
-    text-decoration: none;
-    font-size: 20px;
-    padding: 20px 4%;
-    display: flex;
-    margin-bottom: 20px;
-    line-height: 40px;
-}
-
-ul li.item-menu a .txt-link{
-    margin-left: 70px;
-    transition: .5s;
-    opacity: 0;
-}
-
-nav.menu-lateral.expandir .txt-link{
-    margin-left: 40px;
-    opacity: 1;
-}
-
-ul li.item-menu a .icon > i{
-    font-size: 30px;
-    margin-left: 10px;
-}
-
 .container {
 
     flex: 1; /* Ocupará o espaço restante da tela, empurrando o footer para baixo se necessário */
     max-width: 100vw; /* Impede que a largura ultrapasse o tamanho da tela */
-    width: 80%;
+    width: 69%;
     margin: 0 auto;
     padding: 0rem;
     margin-bottom: 10rem;
 
+}
+
+.logo3semantizar {
+
+    text-align: center;
+    height: 200px;
+
+}
+
+.logo3semantizar img {
+    display: inline-block;
+    object-fit: cover;
+    height: 200px
+}
+
+.texto-inicial {
+    margin-top: 10%;
 }
 
 .validacao {
@@ -133,8 +138,7 @@ ul li.item-menu a .icon > i{
     border-radius: 10px;
     border: 3px solid #000;
     
-    
-    
+
     
 }
 
@@ -208,6 +212,7 @@ h1 {
 h2 {
     font-size: 24px;
     margin-bottom: 20px; /* Adiciona espaço entre o título e os itens */
+    margin-top: 5%;
 }
 
 .h2-index {
@@ -228,6 +233,12 @@ p {
 .img-publicacao{
 
     margin-left: 8rem;
+
+}
+
+.texto-semantizar {
+
+    text-align: center;
 
 }
 
@@ -283,13 +294,13 @@ p {
     background-color: #4c66af;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
     text-decoration: none;
     font-size: 1rem;
     transition: background-color 0.3s ease;
     justify-content: center;
-    width: 150px;
+    width: 160px;
     margin: 0 auto;
     margin-top: 5px;
 }
@@ -324,7 +335,7 @@ p {
 }
 
 .feature {
-    background-color: #e7eef3;
+    background-color: #cadbf5;
     padding: 1rem;
     border-radius: 5px;
     width: 30%;

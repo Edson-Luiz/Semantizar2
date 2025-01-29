@@ -12,13 +12,23 @@
 </head>
 <body>
 
-<header>
-    <a href="/">
-        <h1><img src="{{ url_for('static', filename='img/semantizar2logo.png') }}" alt="Logo do Semantizar com um ícone representando análise de texto" width="400"></h1>
-    </a>
-</header>
+  <header>
+    <div class="inner">
+        <div class="logo">
+            <a href="/">
+                <img class="logo2semantizar" src="{{ url_for('static', filename='img/semantizar2logo3.png') }}" alt="Logo do Semantizar 2.0 com um ícone representando análise de texto">
+            </a>
+        </div>
 
-{% include 'nav.html' %}
+        <nav>
+            <ul>
+              <li><a href="/">Página inicial</a></li>
+              <li><a href="sobre">Sobre</a></li>
+              <li><a href="contato">Contato</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
 
 <lord-icon
 src="https://cdn.lordicon.com/lupuorrc.json"

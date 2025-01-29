@@ -113,6 +113,7 @@ button {
     /* Mãozinha ao passar o mouse */
     transition: background-color 0.3s ease;
     /* Animação suave */
+    font-size: 18px;
 
 
 }
