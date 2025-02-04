@@ -1,7 +1,7 @@
 # app/routes.py
 from flask import render_template, request, redirect, url_for, flash
 from isbnlib import is_isbn10, is_isbn13, canonical
-import requests
+import requests , PyPDF2, io
 from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao
 import os
 from werkzeug.utils import secure_filename
@@ -10,27 +10,30 @@ from werkzeug.utils import secure_filename
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+@app.route("/process_file", methods=["POST"])
+def process_file():
+    print("Requisicao chegou")
+    if "file" not in request.files:
+        print("Nehum arquivo chegou")
+        return jsonify({"error": "Nenhum arquivo enviado"}), 400
 
-def save_file(file):
-    try:
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            
-            # Criar o diretório de uploads, se necessário
-            if not os.path.exists(app.config['UPLOAD_FOLDER']):
-                os.makedirs(app.config['UPLOAD_FOLDER'])
-            
-            file.save(filepath)
-            return filepath
-        return None
-    except Exception as e:
-        print(f"Erro ao salvar arquivo: {e}")
-        return None
+    file = request.files["file"]  # Obtém o arquivo enviado
+    print(f"Arquivo recebido: {file.filename}")
+
+    if file.filename == "":
+        return jsonify({"error": "Nome do arquivo inválido"}), 400
+
+    if file and file.filename.endswith(".pdf"):  # Verifica se é um PDF
+        pdf_reader = PyPDF2.PdfReader(io.BytesIO(file.read()))  # Lê o PDF da memória
+        text = "\n".join([page.extract_text() for page in pdf_reader.pages if page.extract_text()])  # Extrai texto
+
+        # Aqui você pode rodar seu algoritmo no texto extraído
+        resultado = {"texto_extraido": text[:500]}  # Retorna apenas os primeiros 500 caracteres para visualização
+
+        return jsonify(resultado)  # Envia a resposta para o frontend
+
+    return jsonify({"error": "Apenas arquivos PDF são suportados"}), 400
     
-
 # Rota para a página inicial
 @app.route('/')
 def home():

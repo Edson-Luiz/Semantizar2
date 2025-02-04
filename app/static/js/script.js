@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const dragArea = document.getElementById("drag-area");
     const fileInput = document.getElementById("file");
     const fileNameDisplay = document.getElementById("file-name-display");
-    const form = document.querySelector("form"); // Captura o formulário para obter a rota correta
+    const sendButton = document.getElementById("send-button"); // Captura o botão de envio
+    let selectedFile = null; // Variável para armazenar o arquivo escolhido
 
     // Evitar o comportamento padrão ao arrastar/soltar
     ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
@@ -28,8 +29,10 @@ document.addEventListener("DOMContentLoaded", function () {
         // Validar o tipo de arquivo
         if (files.length > 0 && files[0].type === "application/pdf") {
             fileInput.files = files; // Transferir arquivos para o input
+            selectedFile = files[0]; // Salva o arquivo para envio posterior
             fileNameDisplay.innerHTML = `<p>Arquivo selecionado: ${files[0].name}</p>`;
         } else {
+            selectedFile = null;
             fileNameDisplay.innerHTML = `<p style="color: red;">Por favor, envie apenas arquivos PDF.</p>`;
         }
     });
@@ -42,21 +45,31 @@ document.addEventListener("DOMContentLoaded", function () {
         const files = fileInput.files;
 
         if (files.length > 0 && files[0].type === "application/pdf") {
+            selectedFile = files[0]; // Salva o arquivo para envio posterior
             fileNameDisplay.innerHTML = `<p>Arquivo selecionado: ${files[0].name}</p>`;
-            sendFileToServer(files[0]);  // Chama a função para enviar o arquivo ao servidor
         } else {
+            selectedFile = null;
             fileNameDisplay.innerHTML = `<p style="color: red;">Por favor, envie apenas arquivos PDF.</p>`;
             fileInput.value = ""; // Resetar o input
+        }
+    });
+
+    // Enviar apenas quando o botão for clicado
+    sendButton.addEventListener("click", () => {
+        if (selectedFile) {
+            sendFileToServer(selectedFile);
+        } else {
+            alert("Por favor, selecione um arquivo primeiro.");
         }
     });
 
     // Função para enviar o arquivo para o servidor
     function sendFileToServer(file) {
         const formData = new FormData();
-        formData.append("file", file);  // Adiciona o arquivo no FormData
+        formData.append("file", file); // Adiciona o arquivo no FormData
 
         // Envia a requisição para o servidor usando fetch
-        fetch(form.action, {  // Usa a ação do formulário para a URL da rota correta
+        fetch("/process_file", {
             method: "POST",
             body: formData
         })
@@ -108,20 +121,6 @@ function removeAuthor(authorGroup) {
     // Remove o grupo de autor do DOM
     authorGroup.remove();
 }
-
-
-function mostrarFormulario(id) {
-    // Oculta todos os formulários
-    document.getElementById('formLivro').style.display = 'none';
-    document.getElementById('formArtigo').style.display = 'none';
-    document.getElementById('formDissertacao').style.display = 'none';
-
-    // Exibe o formulário correspondente
-    document.getElementById(id).style.display = 'block';
-}
-
-
-
 
 // CODIGO DE ADICIONAR TERMOS
 
@@ -262,3 +261,4 @@ function removerRequiredAntesEnvio() {
 document.querySelector('form').addEventListener('submit', function(event) {
     removerRequiredAntesEnvio();
 });
+
