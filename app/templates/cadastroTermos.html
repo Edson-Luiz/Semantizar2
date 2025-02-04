@@ -27,9 +27,19 @@
         </div>
     </header>
 
-    <div class="forms">
+    <div class="indicador-pagina">
 
-        <h3 class="my-3">Cadastro de Termos</h3><br>
+        <p><a href="/">Página inicial</a> / <a href="cadastro">cadastro</a> / cadastroTermos</p>
+
+    </div>
+
+    <h1 style="display: flex; justify-content: center;">Cadastro de Termos</h1><br>
+
+    <div style="display: flex; justify-content: center;">
+        <h2><img width="1100px" style="display: flex; justify-content: center;" src="{{ url_for('static', filename='img/linhadecadastrosemantizar2.png') }}" alt="linha de cadastro do sistema Semantizar 2.0"></h2>
+    </div>
+
+    <div class="forms-termos">
         <div class="mb-3">
             <input type="text" class="form-control" id="termoInput" placeholder="Digite um termo" />
             <button type="button" id="btn-add" onclick="adicionarTermo()"><i class="bi bi-check-circle-fill"></i></button>
@@ -41,8 +51,6 @@
             <!-- Os termos serão listados aqui -->
         </ul>
 
-        
-         
     </div>
     
 

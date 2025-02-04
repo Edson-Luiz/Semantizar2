@@ -75,7 +75,9 @@ document.addEventListener("DOMContentLoaded", function () {
 // CÓDIGO PARA ADICIONAR MAIS AUTORES
 
 function addAuthor() {
+    // Obtém o container de autores
     const container = document.getElementById('authors-container');
+
     const newAuthorGroup = document.createElement('div');
     newAuthorGroup.classList.add('author-group');
 
@@ -92,18 +94,33 @@ function addAuthor() {
     removeButton.id = 'btn-trash';
     removeButton.innerHTML = '<i class="bi bi-trash-fill"></i>';
     removeButton.classList.add('remove-author');
-    removeButton.onclick = function() { removeAuthor(removeButton); };
+    removeButton.onclick = function() { removeAuthor(newAuthorGroup); };
 
-    // Adiciona os novos elementos no container
+    // Adiciona os novos elementos no grupo de autores
     newAuthorGroup.appendChild(newInput);
     newAuthorGroup.appendChild(removeButton);
+
+    // Adiciona o novo grupo de autores no container
     container.appendChild(newAuthorGroup);
 }
 
-function removeAuthor(button) {
-    // Remove o grupo de autor que contém o botão de remoção
-    button.parentElement.remove();
+function removeAuthor(authorGroup) {
+    // Remove o grupo de autor do DOM
+    authorGroup.remove();
 }
+
+
+function mostrarFormulario(id) {
+    // Oculta todos os formulários
+    document.getElementById('formLivro').style.display = 'none';
+    document.getElementById('formArtigo').style.display = 'none';
+    document.getElementById('formDissertacao').style.display = 'none';
+
+    // Exibe o formulário correspondente
+    document.getElementById(id).style.display = 'block';
+}
+
+
 
 
 // CODIGO DE ADICIONAR TERMOS
@@ -181,3 +198,67 @@ function finalizarCadastro() {
         alert("Erro ao enviar os termos.");
     });
 }
+
+
+// FORMULÁRIO DE CADASTRO
+
+function mostrarFormulario(id) {
+    // Oculta todos os formulários
+    document.getElementById('formLivro').style.display = 'none';
+    document.getElementById('formArtigo').style.display = 'none';
+    document.getElementById('formDissertacao').style.display = 'none';
+    document.getElementById('titulo-autores-ano').style.display = 'none';
+    document.getElementById('button-form').style.display = 'none';
+
+    // Exibe apenas o formulário selecionado
+    document.getElementById(id).style.display = 'block';
+    document.getElementById('titulo-autores-ano').style.display = 'block';
+    document.getElementById('button-form').style.display = 'block';
+    
+
+    // Remove 'required' de todos os campos
+    var allFields = document.querySelectorAll('input[required], select[required], textarea[required]');
+    allFields.forEach(function(input) {
+        input.removeAttribute('required');
+    });
+
+    // Garante que o campo de 'ano' esteja visível
+    document.getElementById('ano').style.display = 'block'; // Adicionei isso aqui
+
+    // Adiciona 'required' ao campo 'titulo' do formulário visível
+    if (id === 'formLivro') {
+        document.getElementById('titulo').setAttribute('required', 'required');
+        document.getElementById('editora').setAttribute('required', 'required');
+        document.getElementById('ano').setAttribute('required', 'required');
+        document.getElementById('isbn').setAttribute('required', 'required');
+    } else if (id === 'formArtigo') {
+        document.getElementById('titulo').setAttribute('required', 'required');
+        document.getElementById('revista').setAttribute('required', 'required');
+        document.getElementById('ano').setAttribute('required', 'required');
+        document.getElementById('volume').setAttribute('required', 'required');
+        document.getElementById('numero').setAttribute('required', 'required');
+        document.getElementById('doi').setAttribute('required', 'required');
+    } else if (id === 'formDissertacao') {
+        document.getElementById('titulo').setAttribute('required', 'required');
+        document.getElementById('orientador').setAttribute('required', 'required');
+        document.getElementById('ano').setAttribute('required', 'required');
+        document.getElementById('universidade').setAttribute('required', 'required');
+        var tipoDocumentoRadioButtons = document.querySelectorAll('input[name="tipo_documento"]');
+        tipoDocumentoRadioButtons.forEach(function(button) {
+            button.setAttribute('required', 'required');
+        });
+    }
+}
+
+// Função para remover 'required' antes do envio do formulário
+function removerRequiredAntesEnvio() {
+    var allFields = document.querySelectorAll('input[required], select[required], textarea[required]');
+    allFields.forEach(function(input) {
+        input.removeAttribute('required');
+    });
+}
+
+// Adiciona o evento de submissão ao formulário para remover 'required' antes do envio
+document.querySelector('form').addEventListener('submit', function(event) {
+    removerRequiredAntesEnvio();
+});

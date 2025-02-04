@@ -69,7 +69,7 @@ class Artigo(db.Model):
     IDPublicacao = db.Column(db.Integer,
                              db.ForeignKey('tbPublicacao.IDPublicacao'))
 
-    def __init__(self, Revista, Volume, Numero, Paginas, DOI, IDPublicacao):
+    def __init__(self, Revista, Volume, Numero, DOI, IDPublicacao):
         self.Revista = Revista
         self.Volume = Volume
         self.Numero = Numero

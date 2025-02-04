@@ -22,21 +22,24 @@
     
             <nav>
                 <ul>
-                    <li><a href="#">Sobre</a></li>
-                    <li><a href="#">Contato</a></li>
+                    <li><a href="/">Página inicial</a></li>
+                    <li><a href="sobre">Sobre</a></li>
+                    <li><a href="contato">Contato</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-<lord-icon
-src="https://cdn.lordicon.com/lupuorrc.json"
-trigger="loop"
-style="width:250px;height:250px">
-</lord-icon>
+    <div class="indicador-pagina" style="margin-left: 5px;">
 
-<div class="container" style="text-align: center;">
-    <img src="{{ url_for('static', filename='img/processo.png') }}" alt="Etapas do processo de extração e explicitação de relações semânticas utilizando o Semantizar 2.0" width="1200">
+        <p><a href="/">Página inicial</a> / processoExtracaoSemantica</p>
+
+    </div>
+
+    <h1>Etapas do processo de extração e explicitação de<br> relações semânticas utilizando o Semantizar 2.0</h1>
+
+<div class="container" style="text-align: center; margin-top: 80px; display: flex; justify-content: center;">
+    <img src="{{ url_for('static', filename='img/processo.png') }}" alt="Etapas do processo de extração e explicitação de relações semânticas utilizando o Semantizar 2.0" width="1500">
 </div>
 
   

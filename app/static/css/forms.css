@@ -14,7 +14,35 @@
     padding: 1rem;
     margin-bottom: 0rem;
     padding-top: 0rem;
+    
 
+}
+
+
+.formCadastro {
+
+    border-collapse: collapse;
+    border-radius: 10px;
+    border: 2px solid rgb(46, 137, 211);
+    padding: 1rem;
+
+}
+
+.forms-termos{
+
+    flex: 1;
+    /* Ocupará o espaço restante da tela, empurrando o footer para baixo se necessário */
+    max-width: 100vw;
+    /* Impede que a largura ultrapasse o tamanho da tela */
+    width: 80%;
+    margin: 0 auto;
+    padding: 1rem;
+    margin-bottom: 0rem;
+    padding-top: 0rem;
+    border-collapse: collapse;
+    border-radius: 10px;
+    border: 2px solid rgb(46, 137, 211);
+    padding: 1rem;
 
 }
 
@@ -72,7 +100,7 @@ input[name="titulo"] {
 
 input[name="isbn"] {
 
-    width: 103px;
+    width: 107px;
 
 }
 

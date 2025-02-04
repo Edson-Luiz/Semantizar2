@@ -93,7 +93,7 @@ header nav a {
 
 
 ul{
-    height: 100%;
+    height: 70%;
     list-style-type: none;
 }
 
@@ -104,7 +104,7 @@ ul{
     width: 69%;
     margin: 0 auto;
     padding: 0rem;
-    margin-bottom: 10rem;
+    margin-bottom: 6rem;
 
 }
 
@@ -122,7 +122,7 @@ ul{
 }
 
 .texto-inicial {
-    margin-top: 10%;
+    margin-top: 6%;
 }
 
 .validacao {
@@ -192,6 +192,22 @@ ul{
 
 }
 
+.indicador-pagina {
+
+    margin-left: 10px;
+
+}
+
+.radio-tipopubli label {
+
+    margin-right: 30px;
+
+}
+
+.radio-grande {
+    transform: scale(1.5); /* Aumenta o tamanho */
+}
+
 footer {
     color: rgb(39, 41, 148);
     text-align: center;
@@ -201,10 +217,10 @@ footer {
 }
 
 h1 {
-    color: #001aff;
+    color: #338ac2;
     text-align: center;
     margin-bottom: 1.5rem;
-    margin-top: 1rem;
+    margin-top: 0rem;
     display: inline-block;
     
 }
@@ -212,7 +228,7 @@ h1 {
 h2 {
     font-size: 24px;
     margin-bottom: 20px; /* Adiciona espaço entre o título e os itens */
-    margin-top: 5%;
+    margin-top: 1%;
 }
 
 .h2-index {
@@ -227,7 +243,7 @@ a {
 
 p {
     line-height: 1.6;
-    margin-top: 1rem;
+    margin-top: 0.2rem;
 }
 
 .img-publicacao{

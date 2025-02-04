@@ -2,7 +2,7 @@
 from flask import render_template, request, redirect, url_for, flash
 from isbnlib import is_isbn10, is_isbn13, canonical
 import requests
-from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo
+from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao
 import os
 from werkzeug.utils import secure_filename
 
@@ -54,10 +54,6 @@ def visualizacao():
 def contato():
     return render_template('contato.html')
 
-@app.route('/cadastro')
-def cadastro():
-    return render_template('cadastro.html')
-
 @app.route('/cadastroTermos')
 def cadastroTermos():
     return render_template('cadastroTermos.html')
@@ -81,109 +77,26 @@ def salvar_termos():
     # Retorna uma resposta de sucesso
     return jsonify({"message": "Termos recebidos com sucesso!", "termos": termos}), 200
         
-@app.route('/cadastroLivro', methods=['GET', 'POST'])
-def cadastroLivro():
+@app.route('/cadastro', methods=['GET', 'POST'])
+def cadastro():
     if request.method == 'POST':
         try:
-            # Obtendo os dados do formulário
+            tipo = request.form['tipo']  # Identifica se é livro, artigo ou doc acadêmico
             titulo = request.form['titulo']
-            autores = request.form.getlist('autor[]')  # Lista de autores
-            ano = request.form['ano']
-            editora = request.form['editora']
-            isbn = request.form['isbn']
-
-            # Validação do ISBN
-            isbn_canonico = canonical(isbn)  # Remove formatações adicionais
-            if not (is_isbn10(isbn_canonico) or is_isbn13(isbn_canonico)):
-                flash("ISBN inválido! Verifique os dados inseridos.", "error")
-                return redirect(url_for('cadastroLivro'))
-
-            # Criando a nova publicação
-            nova_publicacao = Publicacao(
-                TituloPublicacao=titulo,
-                AnoPublicacao=ano,
-                AutorPublicacao=", ".join(autores)  # Armazena os autores como string
-            )
-            db.session.add(nova_publicacao)
-            db.session.flush()  # Obtém o ID da publicação
-
-            # Criando e associando os autores ao livro
-            for autor in autores:
-                # Verifica se o autor já existe, se não, cria um novo autor
-                if autor:
-                    autor_existente = Autor.query.filter_by(NomeAutor=autor).first()
-                    if not autor_existente:
-                        novo_autor = Autor(NomeAutor=autor)
-                        db.session.add(novo_autor)
-                        db.session.flush()  # Obtém o ID do novo autor
-                        autor_existente = novo_autor  # Atualiza a variável autor_existente
-
-                    # Associar o autor à publicação
-                    nova_publicacao.autores.append(autor_existente)
-
-            db.session.commit()
-
-            novo_livro = Livro(
-                Editora=editora,
-                ISBN=isbn,
-                IDPublicacao=nova_publicacao.IDPublicacao
-            )
-            db.session.add(novo_livro)
-            db.session.commit()
-
-            if 'file' not in request.files:
-                flash("Nenhum arquivo enviado", "error")
-                return redirect(url_for('cadastroLivro'))
-    
-            file = request.files['file']
-            filepath = save_file(file)
-    
-            if filepath:
-                # Sucesso no cadastro do arquivo
-                flash("Cadastro realizado com sucesso!", "success")
-                return redirect(url_for('cadastroTermos'))  # Redireciona para a tela de termos
-            else:
-                flash("Arquivo inválido, envie um PDF", "error")
-                return redirect(url_for('cadastroLivro'))  # Retorna para a tela de cadastro com erro
-
-        except Exception as e:
-            flash(f"Erro ao cadastrar livro: {str(e)}", "error")
-            return redirect(url_for('cadastroLivro'))
-
-    # Renderiza o template de cadastro
-    return render_template('cadastroLivro.html')
-
-
-@app.route('/cadastroArtigo', methods=['GET', 'POST'])
-def cadastroArtigo():
-    if request.method == 'POST':
-        try:
-            titulo = request.form['titulo']
-            autores = request.form.getlist('autor[]')
+            # Garantir que apenas autores não vazios sejam inseridos
+            autores = [autor.strip() for autor in request.form.getlist('autor[]') if autor.strip()]
             ano = int(request.form['ano'])
-            revista = request.form['revista']
-            volume = int(request.form['volume'])
-            numero = int(request.form['numero'])
-            doi = request.form['doi']
 
-            # Verificação do DOI
-            crossref_url = f"https://api.crossref.org/works/{doi}"
-            doi_response = requests.get(crossref_url)
-            
-            if doi_response.status_code != 200:
-                flash("DOI inválido ou não encontrado.", "danger")
-                return redirect(url_for('cadastroArtigo'))
-
-            # Criação da publicação
+            # Criando a publicação
             nova_publicacao = Publicacao(
                 TituloPublicacao=titulo,
                 AnoPublicacao=ano,
                 AutorPublicacao=", ".join(autores)
             )
             db.session.add(nova_publicacao)
-            db.session.flush()
-            
-            # Criando e associando os autores ao artigo
+            db.session.commit()  # Realiza o commit para garantir o ID da publicação
+
+            # Criando e associando autores
             for autor in autores:
                 if autor:
                     autor_existente = Autor.query.filter_by(NomeAutor=autor).first()
@@ -193,91 +106,95 @@ def cadastroArtigo():
                         db.session.flush()
                         autor_existente = novo_autor
 
-                    nova_publicacao.autores.append(autor_existente)
+                    # Verifica se a combinação de autor e publicação já existe
+                    autor_publicacao_existente = db.session.query(AutorPublicacao).filter_by(IDAutor=autor_existente.IDAutor, IDPublicacao=nova_publicacao.IDPublicacao).first()
+
+                    if not autor_publicacao_existente:
+                        nova_publicacao.autores.append(autor_existente)
+
+
+            # Tratamento específico por tipo
+            if tipo == 'livro':
+                editora = request.form['editora']
+                isbn = request.form['isbn']
+
+                # Validação do ISBN
+                isbn_canonico = canonical(isbn)
+                if not (is_isbn10(isbn_canonico) or is_isbn13(isbn_canonico)):
+                    flash("ISBN inválido!", "error")
+                    return redirect(url_for('cadastro'))
+
+                novo_livro = Livro(
+                    Editora=editora,
+                    ISBN=isbn,
+                    IDPublicacao=nova_publicacao.IDPublicacao
+                )
+                db.session.add(novo_livro)
+
+            elif tipo == 'artigo':
+                revista = request.form['revista']
+                volume = int(request.form['volume'])
+                numero = int(request.form['numero'])
+                doi = request.form['doi']
+
+                # Verificação do DOI
+                crossref_url = f"https://api.crossref.org/works/{doi}"
+                doi_response = requests.get(crossref_url)
+
+                if doi_response.status_code != 200 or not doi_response.json().get('message', {}).get('DOI'):
+                    flash("DOI inválido ou não encontrado.", "danger")
+                    return redirect(url_for('cadastro'))
+
+                novo_artigo = Artigo(
+                    Revista=revista,
+                    Volume=volume,
+                    Numero=numero,
+                    DOI=doi,
+                    IDPublicacao=nova_publicacao.IDPublicacao
+                )
+                db.session.add(novo_artigo)
+
+            elif tipo == 'doc_academico':
+                universidade_data = request.form['universidade']
+                tipo_defesa = request.form['tipo_documento']
+                orientador = request.form['orientador']
+                coorientador = request.form['coorientador']
+
+                try:
+                    sigla, nome_completo = universidade_data.split(',', 1)
+                except ValueError:
+                    flash("Formato inválido para universidade", "error")
+                    return redirect(url_for('cadastro'))
+
+                novo_doc = DocAcademico(
+                    TipoDocAcademico=tipo_defesa,
+                    IDPublicacao=nova_publicacao.IDPublicacao,
+                    OrientadorDocAcademico=orientador,
+                    CoorientadorDocAcademico=coorientador,
+                    SiglaUniversidade=sigla
+                )
+                db.session.add(novo_doc)
+
+                # Verifica se a universidade já existe
+                nova_universidade = Universidade.query.filter_by(SiglaUniversidade=sigla).first()
+                if not nova_universidade:
+                    nova_universidade = Universidade(
+                        SiglaUniversidade=sigla,
+                        NomeUniversidade=nome_completo
+                    )
+                    db.session.add(nova_universidade)
 
             db.session.commit()
-
-            # Criação do artigo
-            novo_artigo = Artigo(
-                Revista=revista,
-                Volume=volume,
-                Numero=numero,
-                DOI=doi,
-                IDPublicacao=nova_publicacao.IDPublicacao
-            )
-            db.session.add(novo_artigo)
-            db.session.commit()
-
             flash("Cadastro realizado com sucesso!", "success")
             return redirect(url_for('cadastroTermos'))
+
         except Exception as e:
             db.session.rollback()
-            return f"Erro ao cadastrar artigo: {e}"
-    return render_template('cadastroArtigo.html')
+            flash(f"Erro ao cadastrar: {e}", "error")
+            return redirect(url_for('cadastro'))
 
+    return render_template('cadastro.html')
 
-@app.route('/cadastroDocAcademico', methods=['GET', 'POST'])
-def cadastroDocAcademico():
-    if request.method == 'POST':
-        try:
-            titulo = request.form['titulo']
-            autores = request.form.getlist('autor[]')
-            ano = int(request.form['ano'])
-            universidade_data = request.form['universidade']
-            tipo_defesa = request.form['tipo_documento']
-            orientador = request.form['orientador']
-            coorientador = request.form['coorientador']
-
-            sigla, nome_completo = universidade_data.split(',', 1)
-
-            nova_publicacao = Publicacao(
-                TituloPublicacao=titulo,
-                AnoPublicacao=ano,
-                AutorPublicacao=", ".join(autores)
-            )
-            db.session.add(nova_publicacao)
-            db.session.flush()
-
-            for autor in autores:
-                # Verifica se o autor já existe, se não, cria um novo autor
-                if autor:
-                    autor_existente = Autor.query.filter_by(NomeAutor=autor).first()
-                    if not autor_existente:
-                        novo_autor = Autor(NomeAutor=autor)
-                        db.session.add(novo_autor)
-                        db.session.flush()  # Obtém o ID do novo autor
-                        autor_existente = novo_autor  # Atualiza a variável autor_existente
-
-                    # Associar o autor à publicação
-                    nova_publicacao.autores.append(autor_existente)
-
-            db.session.commit()
-
-            novo_doc = DocAcademico(
-                TipoDocAcademico=tipo_defesa,
-                IDPublicacao=nova_publicacao.IDPublicacao,
-                OrientadorDocAcademico=orientador,
-                CoorientadorDocAcademico=coorientador,
-                SiglaUniversidade=sigla
-            )
-            db.session.add(novo_doc)
-            db.session.commit()
-
-
-            nova_universidade = Universidade.query.filter_by(SiglaUniversidade=sigla).first()
-            if not nova_universidade:
-                nova_universidade = Universidade(
-                    SiglaUniversidade=sigla,
-                    NomeUniversidade=nome_completo
-                )
-                db.session.add(nova_universidade)
-                db.session.commit()
-
-            flash("Cadastro realizado com sucesso!", "success")
-            return redirect(url_for('cadastroTermos'))
-        except Exception as e:
-            return f"Erro ao cadastrar documento acadêmico: {e}"
-    return render_template('cadastroDocAcademico.html')
 
 @app.route('/cadastroRelacao')
 def cadastroRelacao():

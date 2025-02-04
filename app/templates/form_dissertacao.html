@@ -1,0 +1,32 @@
+<div id="formDissertacao" class="formulario">
+
+    <label for="orientador">Orientador</label><br>
+    <input type="text" id="orientador" name="orientador" placeholder="Digite o nome do orientador" required><br>
+
+    <label for="coorientador">Coorientador</label><br>
+    <input type="text" id="coorientador" name="coorientador" placeholder="Digite o nome do coorientador"><br>
+
+    <label for="universidade">Universidade</label><br>
+    <select id="universidade" name="universidade">
+        <option value="ufrj">Universidade Federal do Rio de Janeiro (UFRJ)</option>
+        <option value="usp">Universidade de São Paulo (USP)</option>
+        <option value="ufmg">Universidade Federal de Minas Gerais (UFMG)</option>
+        <option value="ufg">Universidade Federal de Goiás (UFG)</option>
+        <option value="outra">Outra</option>
+    </select><br><br>
+
+    <label>Tipo do documento acadêmico</label><br>
+    <div class="radio-group">
+        <input type="radio" id="tese" name="tipo_documento" value="tese">
+        <label for="tese">Tese</label>
+    </div>
+    <div class="radio-group">
+        <input type="radio" id="dissertacao" name="tipo_documento" value="dissertacao">
+        <label for="dissertacao">Dissertação</label>
+    </div>
+    <div class="radio-group">
+        <input type="radio" id="tcc" name="tipo_documento" value="tcc">
+        <label for="tcc">TCC</label>
+    </div>
+
+</div>
