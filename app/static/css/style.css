@@ -208,6 +208,14 @@ ul{
     transform: scale(1.5); /* Aumenta o tamanho */
 }
 
+.linhacadastro {
+    display: block;
+    margin: auto;
+    max-width: 80%;
+    height: auto;
+
+}
+
 footer {
     color: rgb(39, 41, 148);
     text-align: center;

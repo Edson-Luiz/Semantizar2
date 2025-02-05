@@ -1,7 +1,7 @@
 # app/routes.py
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, session
 from isbnlib import is_isbn10, is_isbn13, canonical
-import requests , PyPDF2, io
+import requests , PyPDF2, io, re, itertools
 from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao
 import os
 from werkzeug.utils import secure_filename
@@ -9,6 +9,42 @@ from werkzeug.utils import secure_filename
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
+
+def encontrar_pares_termos(texto, termos):
+    frases = re.split(r"[.!?]\s*", texto)  # Divide o texto em frases
+    pares_encontrados = []
+
+    pares_termos = list(itertools.combinations(termos, 2))  # Gera pares únicos de termos
+
+    for frase in frases:
+        for termo1, termo2 in pares_termos:
+            if termo1 in frase and termo2 in frase:
+                pares_encontrados.append({"termo1": termo1, "termo2": termo2, "frase": frase})
+
+    print("passei aqui")
+    return pares_encontrados
+
+@app.route('/salvar_termos', methods=['POST'])
+def salvar_termos():
+    data = request.get_json()  # Obtém os dados enviados como JSON
+    termos = data.get('termos', [])  # Extrai o vetor de termos
+
+    if not termos:
+        return jsonify({"error": "Nenhum termo foi enviado."}), 400
+
+    # Aqui você pode processar os termos (ex: salvar no banco de dados)
+    print("Termos recebidos:", termos)
+
+    texto = session.get('texto', '')
+
+    pares_encontrados = encontrar_pares_termos(texto, termos)
+    session['relacoes_encontradas'] = pares_encontrados
+
+    session['termos'] = termos
+    
+    print("cheguei")
+    # Retorna uma resposta de sucesso
+    return redirect(url_for('validacao_relacao'))
 
 @app.route("/process_file", methods=["POST"])
 def process_file():
@@ -28,12 +64,26 @@ def process_file():
         text = "\n".join([page.extract_text() for page in pdf_reader.pages if page.extract_text()])  # Extrai texto
 
         # Aqui você pode rodar seu algoritmo no texto extraído
-        resultado = {"texto_extraido": text[:500]}  # Retorna apenas os primeiros 500 caracteres para visualização
+        resultado = {"texto_extraido": text[:500]}
+        session['texto'] = text # Retorna apenas os primeiros 500 caracteres para visualização
 
         return jsonify(resultado)  # Envia a resposta para o frontend
 
     return jsonify({"error": "Apenas arquivos PDF são suportados"}), 400
-    
+
+@app.route("/salvar_validacao", methods=["POST"])
+def salvar_validacao():
+    data = request.get_json()
+    termo1 = data.get("termo1")
+    termo2 = data.get("termo2")
+    is_valid = data.get("isValid")
+
+    # Aqui você pode salvar no banco de dados ou exibir no console
+    status = "Aceito" if is_valid else "Rejeitado"
+    print(f"🔹 Relação {status}: {termo1} ↔ {termo2}")
+
+    return jsonify({"message": f"Relação {status} com sucesso!"}), 200
+
 # Rota para a página inicial
 @app.route('/')
 def home():
@@ -44,9 +94,11 @@ def home():
 def sobre():
     return render_template('sobre.html')
 
-@app.route('/validacao')
-def validacao():
-    return render_template('validacao.html')
+@app.route('/validacao_relacao')
+def validacao_relacao():
+    # Recupera as relações de termos encontradas da sessão
+    relacoes = session.get("relacoes_encontradas", [])
+    return render_template('validacao_relacao.html', relacoes=relacoes)
 
 @app.route('/visualizacao')
 def visualizacao():
@@ -65,21 +117,6 @@ def cadastroTermos():
 def processoExtracaoSemantica():
     return render_template('processoExtracaoSemantica.html')
 
-
-@app.route('/salvar_termos', methods=['POST'])
-def salvar_termos():
-    data = request.get_json()  # Obtém os dados enviados como JSON
-    termos = data.get('termos', [])  # Extrai o vetor de termos
-
-    if not termos:
-        return jsonify({"error": "Nenhum termo foi enviado."}), 400
-
-    # Aqui você pode processar os termos (ex: salvar no banco de dados)
-    print("Termos recebidos:", termos)
-
-    # Retorna uma resposta de sucesso
-    return jsonify({"message": "Termos recebidos com sucesso!", "termos": termos}), 200
-        
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
     if request.method == 'POST':

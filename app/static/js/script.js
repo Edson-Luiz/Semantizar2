@@ -186,8 +186,9 @@ function finalizarCadastro() {
     })
     .then(response => {
         if (response.ok) {
-            alert("Termos enviados com sucesso!");
             console.log("Termos enviados:", termos);
+
+            
         } else {
             alert("Erro ao enviar os termos.");
         }
@@ -262,3 +263,15 @@ document.querySelector('form').addEventListener('submit', function(event) {
     removerRequiredAntesEnvio();
 });
 
+function validarRelacao(isValid, termo1, termo2) {
+    fetch('/salvar_validacao', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ termo1, termo2, isValid })
+    })
+    .then(response => response.json())
+    .then(data => alert(data.message))
+    .catch(error => console.error("Erro ao salvar validação:", error));
+}
