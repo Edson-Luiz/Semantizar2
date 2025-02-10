@@ -416,6 +416,33 @@ p {
     font-style: italic;
 }
 
+#drag-area-txt {
+    border: 2px dashed #007BFF;
+    padding: 30px;
+    border-radius: 5px;
+    color: #007BFF;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+}
+
+#drag-area-txt:hover {
+    background-color: #007BFF;
+    color: white;
+}
+
+#drag-area-txt.drag-over {
+    background-color: #0056b3; /* Cor mais escura para indicar interação */
+    color: white;
+    border-color: #0056b3;
+}
+
+.file-name-display-txt {
+    margin-top: 40px;
+    color: #555;
+    font-style: italic;
+}
+
 table {
     border-collapse: collapse;
     border: 2px solid rgb(140 140 140);

@@ -1,12 +1,111 @@
 
-// CODIGO PARA SELECIONAR O ARQUIVO
+// CODIGO PARA SELECIONAR O ARQUIVO .PDF
 
 document.addEventListener("DOMContentLoaded", function () {
     const dragArea = document.getElementById("drag-area");
     const fileInput = document.getElementById("file");
+    const fileUploadBtn = document.getElementById("file-upload-btn");
     const fileNameDisplay = document.getElementById("file-name-display");
-    const sendButton = document.getElementById("send-button"); // Captura o botão de envio
-    let selectedFile = null; // Variável para armazenar o arquivo escolhido
+    const sendButton = document.getElementById("send-button"); 
+    let selectedFile = null;
+
+    // Evitar o comportamento padrão ao arrastar/soltar
+    ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+        dragArea.addEventListener(eventName, e => e.preventDefault());
+    });
+
+    // Adicionar/remover classe para estilizar ao arrastar
+    ["dragenter", "dragover"].forEach(eventName => {
+        dragArea.classList.add("drag-over");
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+        dragArea.classList.remove("drag-over");
+    });
+
+    // Capturar arquivos ao soltar
+    dragArea.addEventListener("drop", e => {
+        const files = e.dataTransfer.files;
+
+        if (files.length > 0 && files[0].type === "application/pdf") {
+            fileInput.files = files;
+            fileUploadBtn.files = files;
+            selectedFile = files[0];
+            fileNameDisplay.innerHTML = `<p>Arquivo selecionado: ${files[0].name}</p>`;
+        } else {
+            resetFileSelection("Por favor, envie apenas arquivos PDF.");
+        }
+    });
+
+    // Abrir seletor de arquivo ao clicar na área
+    dragArea.addEventListener("click", () => fileInput.click());
+
+    // Mostrar o nome do arquivo selecionado manualmente no input personalizado
+    fileInput.addEventListener("change", handleFileSelection);
+    fileUploadBtn.addEventListener("change", handleFileSelection);
+
+    function handleFileSelection(event) {
+        const files = event.target.files;
+
+        if (files.length > 0 && files[0].type === "application/pdf") {
+            selectedFile = files[0];
+            fileNameDisplay.innerHTML = `<p>Arquivo selecionado: ${files[0].name}</p>`;
+            
+            // Sincroniza o outro input file
+            if (event.target === fileInput) {
+                fileUploadBtn.files = fileInput.files;
+            } else {
+                fileInput.files = fileUploadBtn.files;
+            }
+        } else {
+            resetFileSelection("Por favor, envie apenas arquivos PDF.");
+        }
+    }
+
+    function resetFileSelection(message) {
+        selectedFile = null;
+        fileNameDisplay.innerHTML = `<p style="color: red;">${message}</p>`;
+        fileInput.value = "";
+        fileUploadBtn.value = "";
+    }
+
+    // Enviar apenas quando o botão for clicado
+    sendButton.addEventListener("click", () => {
+        if (selectedFile) {
+            sendFileToServerPDF(selectedFile);
+        } else {
+            alert("Por favor, selecione um arquivo primeiro.");
+        }
+    });
+
+    // Função para enviar o arquivo para o servidor
+    function sendFileToServerPDF(file) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        fetch("/process_file", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Arquivo enviado com sucesso:", data);
+        })
+        .catch(error => {
+            console.error("Erro ao enviar o arquivo:", error);
+        });
+    }
+});
+
+// CÓDIGO PARA ADICIONAR O ARQUIVO .TXT
+
+document.addEventListener("DOMContentLoaded", function () {
+    const dragArea = document.getElementById("drag-area-txt");
+    const fileInput = document.getElementById("file-txt");
+    const fileUploadBtn = document.getElementById("file-upload-btn-txt");
+    const fileNameDisplay = document.getElementById("file-name-display-txt");
+    const sendButton = document.getElementById("send-button"); 
+    let selectedFile = null;
 
     // Evitar o comportamento padrão ao arrastar/soltar
     ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
@@ -26,63 +125,76 @@ document.addEventListener("DOMContentLoaded", function () {
     dragArea.addEventListener("drop", e => {
         const files = e.dataTransfer.files;
 
-        // Validar o tipo de arquivo
-        if (files.length > 0 && files[0].type === "application/pdf") {
-            fileInput.files = files; // Transferir arquivos para o input
-            selectedFile = files[0]; // Salva o arquivo para envio posterior
+        if (files.length > 0 && files[0].type === "text/plain") {
+            fileInput.files = files;
+            fileUploadBtn.files = files;
+            selectedFile = files[0];
             fileNameDisplay.innerHTML = `<p>Arquivo selecionado: ${files[0].name}</p>`;
         } else {
-            selectedFile = null;
-            fileNameDisplay.innerHTML = `<p style="color: red;">Por favor, envie apenas arquivos PDF.</p>`;
+            resetFileSelection("Por favor, envie apenas arquivos TXT.");
         }
     });
 
     // Abrir seletor de arquivo ao clicar na área
     dragArea.addEventListener("click", () => fileInput.click());
 
-    // Mostrar o nome do arquivo selecionado manualmente
-    fileInput.addEventListener("change", () => {
-        const files = fileInput.files;
+    // Mostrar o nome do arquivo selecionado manualmente no input personalizado
+    fileInput.addEventListener("change", handleFileSelection);
+    fileUploadBtn.addEventListener("change", handleFileSelection);
 
-        if (files.length > 0 && files[0].type === "application/pdf") {
-            selectedFile = files[0]; // Salva o arquivo para envio posterior
+    function handleFileSelection(event) {
+        const files = event.target.files;
+
+        if (files.length > 0 && files[0].type === "text/plain") {
+            selectedFile = files[0];
             fileNameDisplay.innerHTML = `<p>Arquivo selecionado: ${files[0].name}</p>`;
+
+            // Sincroniza o outro input file
+            if (event.target === fileInput) {
+                fileUploadBtn.files = fileInput.files;
+            } else {
+                fileInput.files = fileUploadBtn.files;
+            }
         } else {
-            selectedFile = null;
-            fileNameDisplay.innerHTML = `<p style="color: red;">Por favor, envie apenas arquivos PDF.</p>`;
-            fileInput.value = ""; // Resetar o input
+            resetFileSelection("Por favor, envie apenas arquivos TXT.");
         }
-    });
+    }
+
+    function resetFileSelection(message) {
+        selectedFile = null;
+        fileNameDisplay.innerHTML = `<p style="color: red;">${message}</p>`;
+        fileInput.value = "";
+        fileUploadBtn.value = "";
+    }
 
     // Enviar apenas quando o botão for clicado
     sendButton.addEventListener("click", () => {
         if (selectedFile) {
-            sendFileToServer(selectedFile);
+            sendFileToServerTXT(selectedFile);
         } else {
             alert("Por favor, selecione um arquivo primeiro.");
         }
     });
 
     // Função para enviar o arquivo para o servidor
-    function sendFileToServer(file) {
+    function sendFileToServerTXT(file) {
         const formData = new FormData();
-        formData.append("file", file); // Adiciona o arquivo no FormData
+        formData.append("file", file);
 
-        // Envia a requisição para o servidor usando fetch
-        fetch("/process_file", {
+        fetch("/salvar_termos", {
             method: "POST",
             body: formData
         })
         .then(response => response.json())
         .then(data => {
-            console.log("Arquivo enviado com sucesso:", data);
-            // Aqui você pode tratar a resposta do servidor, como exibir uma mensagem
+            console.log("Arquivo .txt enviado com sucesso:", data);
         })
         .catch(error => {
             console.error("Erro ao enviar o arquivo:", error);
         });
     }
 });
+
 
 
 // CÓDIGO PARA ADICIONAR MAIS AUTORES
@@ -102,10 +214,9 @@ function addAuthor() {
     newInput.required = true;
 
     // Cria o botão de remover
-    const removeButton = document.createElement('button');
-    removeButton.type = 'button';
+    const removeButton = document.createElement('span');
     removeButton.id = 'btn-trash';
-    removeButton.innerHTML = '<i class="bi bi-trash-fill"></i>';
+    removeButton.innerHTML = 'Remover autor(a)';
     removeButton.classList.add('remove-author');
     removeButton.onclick = function() { removeAuthor(newAuthorGroup); };
 

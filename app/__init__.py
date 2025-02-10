@@ -4,11 +4,12 @@ from sqlalchemy import text
 
 # Inicializa o app Flask
 app = Flask(__name__)
-app.secret_key = '9xCq0VHwlW16Pv7CIXWX'
+
 
 # Configuração do banco de dados MySQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:semant1401@localhost/semantizar2_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = '9xCq0VHwlW16Pv7CIXWX'
 
 # Inicializa o banco de dados (SQLAlchemy)
 db = SQLAlchemy()

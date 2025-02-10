@@ -57,11 +57,13 @@
     
             <!-- Container para adicionar autores -->
                 <div id="authors-container">
+                    
                     <label for="autor">Autores</label><br>
                     <div class="author-group">
                         <input type="text" name="autor[]" placeholder="Digite o nome do autor(a)" required>
-                        <button type="button" id="btn-add" onclick="addAuthor()"><i class="bi bi-check-circle-fill"></i></button><br>
+                        <span id="btn-add" onclick="addAuthor()">Adicionar autor(a)</span><br>
                     </div>
+                    
                 </div>
 
                 <label for="ano">Ano</label><br>
@@ -88,6 +90,7 @@
             <div id="button-form" style="display: none;">
 
                 <p class="text-muted">Envie apenas arquivos no formato <strong>.pdf</strong></p>
+                <input type="file" id="file-upload-btn" name="file-upload-btn" accept=".pdf">
                 <div class="file-upload">
                     <input type="file" id="file" name="file" multiple>
                     <label for="file" id="drag-area">Arraste o arquivo aqui ou clique para selecionar</label>

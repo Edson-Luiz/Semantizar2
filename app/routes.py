@@ -10,6 +10,7 @@ from werkzeug.utils import secure_filename
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
 
+
 def encontrar_pares_termos(texto, termos):
     frases = re.split(r"[.!?]\s*", texto)  # Divide o texto em frases
     pares_encontrados = []
@@ -26,25 +27,43 @@ def encontrar_pares_termos(texto, termos):
 
 @app.route('/salvar_termos', methods=['POST'])
 def salvar_termos():
-    data = request.get_json()  # Obtém os dados enviados como JSON
-    termos = data.get('termos', [])  # Extrai o vetor de termos
+    termos = []
+
+    # Verifica se um arquivo foi enviado
+    if 'file' in request.files:
+        file = request.files['file']
+        
+        if file.filename == '':
+            return jsonify({"error": "Nenhum arquivo enviado."}), 400
+        
+        # Verifica se o arquivo é um .txt
+        if file and file.filename.endswith('.txt'):
+            # Lê os termos do arquivo
+            termos = file.read().decode('utf-8').splitlines()
+        else:
+            return jsonify({"error": "Apenas arquivos .txt são permitidos."}), 400
+
+    # Se não for um arquivo, tenta pegar os termos do JSON
+    else:
+        data = request.get_json()
+        termos = data.get('termos', [])
 
     if not termos:
         return jsonify({"error": "Nenhum termo foi enviado."}), 400
 
-    # Aqui você pode processar os termos (ex: salvar no banco de dados)
+    # Processa os termos
     print("Termos recebidos:", termos)
 
-    texto = session.get('texto', '')
+    texto = session.get('texto', '')  # Obtém o texto armazenado na sessão
+    print(texto)
 
     pares_encontrados = encontrar_pares_termos(texto, termos)
     session['relacoes_encontradas'] = pares_encontrados
-
     session['termos'] = termos
     
     print("cheguei")
-    # Retorna uma resposta de sucesso
     return redirect(url_for('validacao_relacao'))
+
 
 @app.route("/process_file", methods=["POST"])
 def process_file():
@@ -98,6 +117,7 @@ def sobre():
 def validacao_relacao():
     # Recupera as relações de termos encontradas da sessão
     relacoes = session.get("relacoes_encontradas", [])
+    print(relacoes)
     return render_template('validacao_relacao.html', relacoes=relacoes)
 
 @app.route('/visualizacao')

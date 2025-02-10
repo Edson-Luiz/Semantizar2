@@ -39,10 +39,14 @@
         <h2><img class="linhacadastro"  src="{{ url_for('static', filename='img/linhadecadastrosemantizar2.png') }}" alt="linha de cadastro do sistema Semantizar 2.0"></h2>
     </div>
 
+    
+
     <div class="forms-termos">
+
+            
         <div class="mb-3">
             <input type="text" class="form-control" id="termoInput" placeholder="Digite um termo" />
-            <button type="button" id="btn-add" onclick="adicionarTermo()"><i class="bi bi-check-circle-fill"></i></button>
+            <span id="btn-add" onclick="adicionarTermo()">Adicionar termo</span>
             <button id="finalizarBtn" class="btn btn-success" onclick="finalizarCadastro()" disabled>Gerar Relacionamentos</button>
         </div>
 
@@ -51,6 +55,23 @@
             <!-- Os termos serão listados aqui -->
         </ul>
 
+
+    </div>
+
+    <div id="button-form" class="forms-arq">
+
+        <p class="text-muted">Envie apenas arquivos no formato <strong>.txt</strong></p>
+        <input type="file" id="file-upload-btn-txt" name="file-upload-btn-txt" accept=".txt">
+        
+        <div class="file-upload">
+            <input type="file" id="file-txt" name="file-txt" accept=".txt">
+            <label for="file" id="drag-area-txt">Arraste o arquivo aqui ou clique para selecionar</label>
+        </div>
+
+        <div id="file-name-display-txt" class="file-name-display-txt">
+            <p>Nenhum arquivo selecionado</p>
+        </div>
+        <button id="send-button" type="submit">Enviar</button>
     </div>
     
 
