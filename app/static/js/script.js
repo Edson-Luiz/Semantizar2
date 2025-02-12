@@ -1,4 +1,3 @@
-
 // CODIGO PARA SELECIONAR O ARQUIVO .PDF
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -188,6 +187,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(data => {
             console.log("Arquivo .txt enviado com sucesso:", data);
+
+            window.location.href = "/validacao_relacao";
         })
         .catch(error => {
             console.error("Erro ao enviar o arquivo:", error);
@@ -299,7 +300,7 @@ function finalizarCadastro() {
         if (response.ok) {
             console.log("Termos enviados:", termos);
 
-            
+            window.location.href = "/validacao_relacao";
         } else {
             alert("Erro ao enviar os termos.");
         }
@@ -309,7 +310,6 @@ function finalizarCadastro() {
         alert("Erro ao enviar os termos.");
     });
 }
-
 
 // FORMULÁRIO DE CADASTRO
 

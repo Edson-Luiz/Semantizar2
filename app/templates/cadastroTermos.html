@@ -43,22 +43,25 @@
 
     <div class="forms-termos">
 
+        <h2>Digite os termos que você deseja adicionar</h2>
             
         <div class="mb-3">
             <input type="text" class="form-control" id="termoInput" placeholder="Digite um termo" />
-            <span id="btn-add" onclick="adicionarTermo()">Adicionar termo</span>
-            <button id="finalizarBtn" class="btn btn-success" onclick="finalizarCadastro()" disabled>Gerar Relacionamentos</button>
+            <span id="btn-add" onclick="adicionarTermo()">Adicionar termo</span><br>
         </div>
 
         <h5>Termos Adicionados:</h5>
         <ul id="termosLista" class="list-group">
             <!-- Os termos serão listados aqui -->
+            
         </ul>
 
-
+        <button id="finalizarBtn" class="btn btn-success" onclick="finalizarCadastro()" disabled>Gerar Relacionamentos</button>
     </div>
 
     <div id="button-form" class="forms-arq">
+
+        <h2>Adicione o arquivo com os termos</h2>
 
         <p class="text-muted">Envie apenas arquivos no formato <strong>.txt</strong></p>
         <input type="file" id="file-upload-btn-txt" name="file-upload-btn-txt" accept=".txt">
@@ -71,7 +74,7 @@
         <div id="file-name-display-txt" class="file-name-display-txt">
             <p>Nenhum arquivo selecionado</p>
         </div>
-        <button id="send-button" type="submit">Enviar</button>
+        <button id="send-button" type="submit">Gerar Relacionamentos</button>
     </div>
     
 
