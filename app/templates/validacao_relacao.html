@@ -47,8 +47,21 @@
                     <td>{{ par.termo2 }}</td>
                     <td>{{ par.frase }}</td>
                     <td>
-                        <button class="btn btn-success btn-sm" onclick="validarRelacao(true, '{{ par.termo1 }}', '{{ par.termo2 }}')">✅</button>
-                        <button class="btn btn-danger btn-sm" onclick="validarRelacao(false, '{{ par.termo1 }}', '{{ par.termo2 }}')">❌</button>
+                        
+                            <button class="btn btn-success btn-sm" 
+                                data-termo1="{{ par.termo1 }}" 
+                                data-termo2="{{ par.termo2 }}" 
+                                data-frase="{{ par.frase }}" 
+                                onclick="validarRelacao(this, true)">✅
+                            </button>
+                        
+                            <button class="btn btn-danger btn-sm" 
+                                data-termo1="{{ par.termo1 }}" 
+                                data-termo2="{{ par.termo2 }}" 
+                                data-frase="{{ par.frase }}" 
+                                onclick="validarRelacao(this, false)">❌
+                            </button>                        
+
                     </td>
                 </tr>
                 {% endfor %}

@@ -5,25 +5,39 @@ import requests , PyPDF2, io, re, itertools
 from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao
 import os
 from werkzeug.utils import secure_filename
+from collections import defaultdict
 
 
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
 
 
+
 def encontrar_pares_termos(texto, termos):
     frases = re.split(r"[.!?]\s*", texto)  # Divide o texto em frases
     pares_encontrados = []
+    
+    # Criar um índice de frases onde cada termo aparece
+    indice_frases = defaultdict(set)  # Dicionário {termo: {frases onde aparece}}
+    
+    for i, frase in enumerate(frases):
+        palavras = set(frase.split())  # Converte frase para conjunto de palavras (busca mais rápida)
+        for termo in termos:
+            if termo in palavras:
+                indice_frases[termo].add(i)  # Adiciona índice da frase onde o termo aparece
 
-    pares_termos = list(itertools.combinations(termos, 2))  # Gera pares únicos de termos
+    # Gerar pares únicos de termos
+    pares_termos = list(itertools.combinations(termos, 2))
 
-    for frase in frases:
-        for termo1, termo2 in pares_termos:
-            if termo1 in frase and termo2 in frase:
-                pares_encontrados.append({"termo1": termo1, "termo2": termo2, "frase": frase})
+    # Buscar frases onde ambos os termos aparecem
+    for termo1, termo2 in pares_termos:
+        frases_comuns = indice_frases[termo1] & indice_frases[termo2]  # Interseção das frases
+        
+        for i in frases_comuns:
+            pares_encontrados.append({"termo1": termo1, "termo2": termo2, "frase": frases[i]})
 
-    print("passei aqui")
     return pares_encontrados
+
 
 @app.route('/salvar_termos', methods=['POST'])
 def salvar_termos():
@@ -258,7 +272,12 @@ def cadastro():
 
 @app.route('/cadastroRelacao')
 def cadastroRelacao():
-    return render_template('cadastroRelacao.html')
+    termo1 = request.args.get("termo1", "")
+    termo2 = request.args.get("termo2", "")
+    frase = request.args.get("frase", "")
+    
+    return render_template("cadastroRelacao.html", termo1=termo1, termo2=termo2, frase=frase)
+    
 
 
 

@@ -374,15 +374,33 @@ document.querySelector('form').addEventListener('submit', function(event) {
     removerRequiredAntesEnvio();
 });
 
-function validarRelacao(isValid, termo1, termo2) {
-    fetch('/salvar_validacao', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ termo1, termo2, isValid })
-    })
-    .then(response => response.json())
-    .then(data => alert(data.message))
-    .catch(error => console.error("Erro ao salvar validação:", error));
+function validarRelacao(button, isValid) {
+    // Obtém os valores dos atributos data
+    let termo1 = button.getAttribute("data-termo1");
+    let termo2 = button.getAttribute("data-termo2");
+    let frase = button.getAttribute("data-frase");
+
+    if (isValid) {
+        // Redireciona para a página de cadastro
+        window.location.href = `/cadastroRelacao?termo1=${encodeURIComponent(termo1)}&termo2=${encodeURIComponent(termo2)}&frase=${encodeURIComponent(frase)}`;
+    } else {
+        // Envia a validação negativa para o backend
+        fetch('/salvar_validacao', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ termo1, termo2, isValid })
+        })
+        .then(response => response.json())
+        .then(data => alert(data.message))
+        .catch(error => console.error("Erro ao salvar validação:", error));
+    }
+}
+
+
+function moverValidacaoRelacao(){
+
+    window.location.href = "/validacao_relacao";
+
 }
