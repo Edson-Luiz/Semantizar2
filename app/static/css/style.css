@@ -553,3 +553,7 @@ table {
     color: rgb(26, 39, 155);
     
 }
+
+abbr {
+    color: red;
+}

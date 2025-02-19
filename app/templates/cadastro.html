@@ -35,11 +35,12 @@
 
     <h1>Extração de relações semânticas</h1>
 
+    <div style="display: flex; justify-content: center;">
+        <img class="linhacadastro" src="{{ url_for('static', filename='img/linhadecadastrosemantizar.png') }}" alt="linha de cadastro do sistema Semantizar 2.0">
+    </div>
+
     <div class="forms">
-        <div style="display: flex; justify-content: center;">
-            <img class="linhacadastro" src="{{ url_for('static', filename='img/linhadecadastrosemantizar.png') }}" alt="linha de cadastro do sistema Semantizar 2.0">
-        </div>
-    
+        
         <form class="formCadastro" action="/cadastro" method="post" enctype="multipart/form-data">
             <h2>Escolha o tipo da publicação:</h2>
     
@@ -52,37 +53,39 @@
             <br>
     
             <div id="titulo-autores-ano"style="display: none;">
-                <label for="titulo">Título</label><br>
-                <input type="text" id="titulo" name="titulo" placeholder="Digite o título do documento acadêmico" required><br>
+                <label for="titulo">Título <abbr title="campo obrigatório">*</abbr></label><br>
+                <input type="text" id="titulo" name="titulo" placeholder="Digite o título do documento acadêmico" required aria-required="true"><br>
     
             <!-- Container para adicionar autores -->
                 <div id="authors-container">
-                    
-                    <label for="autor">Autores</label><br>
-                    <div class="author-group">
-                        <input type="text" name="autor[]" placeholder="Digite o nome do autor(a)" required>
-                        <span id="btn-add" onclick="addAuthor()">Adicionar autor(a)</span><br>
-                    </div>
+                        
+                    <label for="autor">Autores <abbr title="campo obrigatório">*</abbr></label><br>
+                    <input type="text" id="autorInput" name="autor[]" placeholder="Digite o nome do autor(a)" required aria-required="true">
+                    <span id="btn-add" onclick="addAuthor()">Adicionar autor(a)</span><br>
+
+                    <ul id="autoresLista" class="list-group mt-2"></ul>
+
+                    <button id="finalizarBtnAutores" class="btn btn-success" onclick="finalizarCadastroAutores()">Salvar autores</button>
                     
                 </div>
 
-                <label for="ano">Ano</label><br>
-                <input type="text" id="ano" name="ano" maxlength="4" pattern="\d{4}" required>
+                <label for="ano">Ano <abbr title="campo obrigatório">*</abbr></label><br>
+                <input type="text" id="ano" name="ano" maxlength="4" pattern="\d{4}" required aria-required="true">
             </div>
             
             
     
             <!-- Formulários de cadastro -->
             <div id="formLivro" class="formulario" style="display: none;">
-                {% include 'form_livro.html' %}
+                {% include 'formLivro.html' %}
             </div>
     
             <div id="formArtigo" class="formulario" style="display: none;">
-                {% include 'form_artigo.html' %}
+                {% include 'formArtigo.html' %}
             </div>
     
             <div id="formDissertacao" class="formulario" style="display: none;">
-                {% include 'form_dissertacao.html' %}
+                {% include 'formDissertacao.html' %}
             </div>
     
             

@@ -79,6 +79,7 @@ def salvar_termos():
     return redirect(url_for('validacao_relacao'))
 
 
+
 @app.route("/process_file", methods=["POST"])
 def process_file():
     print("Requisicao chegou")
@@ -127,12 +128,12 @@ def home():
 def sobre():
     return render_template('sobre.html')
 
-@app.route('/validacao_relacao')
+@app.route('/validacaoRelacao')
 def validacao_relacao():
     # Recupera as relações de termos encontradas da sessão
     relacoes = session.get("relacoes_encontradas", [])
     print(relacoes)
-    return render_template('validacao_relacao.html', relacoes=relacoes)
+    return render_template('validacaoRelacao.html', relacoes=relacoes)
 
 @app.route('/visualizacao')
 def visualizacao():
@@ -151,14 +152,24 @@ def cadastroTermos():
 def processoExtracaoSemantica():
     return render_template('processoExtracaoSemantica.html')
 
+@app.route('/salvar_autores', methods=['POST'])
+def salvar_autores():
+    autores = request.form.getlist('autores[]')
+    print(autores)
+    session['autores'] = autores  # Armazena os autores na sessão
+    return jsonify({"message": "Autores salvos"})
+
 @app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
     if request.method == 'POST':
         try:
+            # Recebe os dados enviados via JSON
+
             tipo = request.form['tipo']  # Identifica se é livro, artigo ou doc acadêmico
             titulo = request.form['titulo']
-            # Garantir que apenas autores não vazios sejam inseridos
-            autores = [autor.strip() for autor in request.form.getlist('autor[]') if autor.strip()]
+            # Recebe os autores do corpo da requisição JSON
+            autores = session.pop('autores', [])
+            print("Autores recebidos:", autores)
             ano = int(request.form['ano'])
 
             # Criando a publicação

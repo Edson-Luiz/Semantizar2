@@ -1,12 +1,12 @@
 <div id="formDissertacao" class="formulario">
 
-    <label for="orientador">Orientador</label><br>
-    <input type="text" id="orientador" name="orientador" placeholder="Digite o nome do orientador" required><br>
+    <label for="orientador">Orientador <abbr title="campo obrigatório">*</abbr></label><br>
+    <input type="text" id="orientador" name="orientador" placeholder="Digite o nome do orientador" required aria-required="true"><br>
 
     <label for="coorientador">Coorientador</label><br>
     <input type="text" id="coorientador" name="coorientador" placeholder="Digite o nome do coorientador"><br>
 
-    <label for="universidade">Universidade</label><br>
+    <label for="universidade">Universidade <abbr title="campo obrigatório">*</abbr></label><br>
 <select id="universidade" name="universidade">
     <option value="ufrj">Universidade Federal do Rio de Janeiro (UFRJ)</option>
     <option value="usp">Universidade de São Paulo (USP)</option>
@@ -48,7 +48,7 @@
     <option value="outra">Outra</option>
 </select><br><br>
 
-    <label>Tipo do documento acadêmico</label><br>
+    <label>Tipo do documento acadêmico <abbr title="campo obrigatório">*</abbr></label><br>
     <div class="radio-group">
         <input type="radio" id="tese" name="tipo_documento" value="tese">
         <label for="tese">Tese</label>

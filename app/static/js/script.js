@@ -404,3 +404,87 @@ function moverValidacaoRelacao(){
     window.location.href = "/validacao_relacao";
 
 }
+
+//CÓDIGO PARA ADICIONAR AUTORES
+
+const autores = [];
+const autorInput = document.getElementById("autorInput");
+const autoresLista = document.getElementById("autoresLista");
+const finalizarBtnAutores = document.getElementById("finalizarBtnAutores");
+
+// Função para adicionar autor
+function addAuthor() {
+    const autor = autorInput.value.trim();
+
+    if (autor && !autores.includes(autor)) {
+        autores.push(autor);
+        atualizarListaAutores();
+        autorInput.value = ""; // Limpar campo de input
+        autorInput.focus();
+    }
+}
+
+// Função para remover um autor
+function removerAutor(index) {
+    autores.splice(index, 1);
+    atualizarListaAutores();
+}
+
+// Função para atualizar a lista de autores
+function atualizarListaAutores() {
+    autoresLista.innerHTML = ""; // Limpar a lista antes de atualizar
+    autores.forEach((autor, index) => {
+        const li = document.createElement("li");
+        li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+        li.textContent = autor;
+
+        const excluirBtn = document.createElement("button");
+        excluirBtn.classList.add("btn", "btn-danger", "btn-sm");
+        excluirBtn.id = 'btn-trash';
+        excluirBtn.innerHTML = '<i class="bi bi-trash-fill"></i>';
+        excluirBtn.onclick = () => removerAutor(index);
+
+        li.appendChild(excluirBtn);
+        autoresLista.appendChild(li);
+    });
+
+}
+
+// Função para finalizar o cadastro de autores usando FormData
+function finalizarCadastroAutores() {
+    if (autores.length === 0) {
+        alert("Adicione ao menos um autor antes de finalizar!");
+        return;
+    }
+
+    let formData = new FormData();
+
+    // Adicionando os autores ao FormData
+    autores.forEach(autor => {
+        formData.append("autores[]", autor);
+    });
+
+    for (let pair of formData.entries()) {
+        console.log(pair[0], pair[1]);
+    }
+
+    // Envia os autores para o backend usando fetch
+    fetch("/salvar_autores", {
+        method: "POST",
+        body: formData // Envia como FormData
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Autores enviados:", autores);
+
+            alert("Autores enviados", autores)
+
+        } else {
+            alert("Erro ao enviar os autores.");
+        }
+    })
+    .catch(error => {
+        console.error("Erro na requisição:", error);
+        alert("Erro ao enviar os autores.", error);
+    });
+}
