@@ -1,42 +1,107 @@
 # app/routes.py
 from flask import render_template, request, redirect, url_for, flash, session
 from isbnlib import is_isbn10, is_isbn13, canonical
-import requests , PyPDF2, io, re, itertools
+import requests , PyPDF2, io, itertools
 from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao
 import os
+import uuid
+import spacy
+import re
+import tqdm 
 from werkzeug.utils import secure_filename
 from collections import defaultdict
+from itertools import combinations
 
 
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
+UPLOAD_FOLDER = 'uploads'  # Pasta para armazenar arquivos enviados
+ALLOWED_EXTENSIONS = {'pdf'}
+
+nlp = spacy.load("pt_core_news_sm")
+nlp.max_length = 5000000 
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def get_last_uploaded_file():
+    try:
+        # Lista os arquivos na pasta de uploads
+        files = os.listdir(UPLOAD_FOLDER)
+        
+        # Filtra apenas arquivos e ignora diretórios
+        files = [f for f in files if os.path.isfile(os.path.join(UPLOAD_FOLDER, f))]
+        
+        if not files:
+            return None  # Retorna None se não houver arquivos na pasta
+        
+        # Ordena os arquivos pela data de modificação (do mais recente para o mais antigo)
+        files.sort(key=lambda f: os.path.getmtime(os.path.join(UPLOAD_FOLDER, f)), reverse=True)
+        
+        # Pega o arquivo mais recente
+        latest_file = files[0]
+        return os.path.join(UPLOAD_FOLDER, latest_file)
+    
+    except Exception as e:
+        print(f"Erro ao tentar pegar o último arquivo: {e}")
+        return None
 
 
-
-def encontrar_pares_termos(texto, termos):
-    frases = re.split(r"[.!?]\s*", texto)  # Divide o texto em frases
+def encontrar_pares_termos(pdf_reader, termos):
     pares_encontrados = []
+    termo_ocorrencias = defaultdict(list)  # Armazena os índices e frases correspondentes
     
-    # Criar um índice de frases onde cada termo aparece
-    indice_frases = defaultdict(set)  # Dicionário {termo: {frases onde aparece}}
-    
-    for i, frase in enumerate(frases):
-        palavras = set(frase.split())  # Converte frase para conjunto de palavras (busca mais rápida)
-        for termo in termos:
-            if termo in palavras:
-                indice_frases[termo].add(i)  # Adiciona índice da frase onde o termo aparece
+    frases_total = []  # Lista global para armazenar todas as frases extraídas
 
-    # Gerar pares únicos de termos
-    pares_termos = list(itertools.combinations(termos, 2))
+    for page_num, page in enumerate(pdf_reader.pages):
+        text = page.extract_text()
+        
+        if text:
+            doc = nlp(text)
+            frases = [sent.text for sent in doc.sents]
+            
+            for i, frase in enumerate(frases):
+                frases_total.append(frase)  # Armazena a frase com índice global
+                
+                palavras = set([token.text.lower() for token in nlp(frase) if token.is_alpha])
 
-    # Buscar frases onde ambos os termos aparecem
-    for termo1, termo2 in pares_termos:
-        frases_comuns = indice_frases[termo1] & indice_frases[termo2]  # Interseção das frases
+                for termo in termos:
+                    if termo.lower() in palavras:
+                        termo_ocorrencias[termo].append(len(frases_total) - 1)  # Salva índice global
+
+    # Comparação entre pares de termos
+    for termo1, termo2 in itertools.combinations(termos, 2):
+        frases_comuns = set(termo_ocorrencias[termo1]) & set(termo_ocorrencias[termo2])
         
         for i in frases_comuns:
-            pares_encontrados.append({"termo1": termo1, "termo2": termo2, "frase": frases[i]})
+            if i < len(frases_total):  # Garante que o índice existe
+                pares_encontrados.append({"termo1": termo1, "termo2": termo2, "frase": frases_total[i]})
 
     return pares_encontrados
+
+
+
+@app.route("/process_file", methods=["POST"])
+def process_file():
+    print("Requisição chegou")
+    if "file" not in request.files:
+        print("Nenhum arquivo chegou")
+        return jsonify({"error": "Nenhum arquivo enviado"}), 400
+
+    file = request.files["file"]  # Obtém o arquivo enviado
+    print(f"Arquivo recebido: {file.filename}")
+
+    if file.filename == "":
+        return jsonify({"error": "Nome do arquivo inválido"}), 400
+
+    if file and allowed_file(file.filename):  # Verifica se é um PDF
+        # Gera um nome único para o arquivo e salva no servidor
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(UPLOAD_FOLDER, f"{uuid.uuid4().hex}_{filename}")
+        file.save(file_path)
+
+        # Retorna o caminho do arquivo para o frontend
+        return jsonify({"file_path": file_path}), 200
+
+    return jsonify({"error": "Apenas arquivos PDF são suportados"}), 400
 
 
 @app.route('/salvar_termos', methods=['POST'])
@@ -56,8 +121,6 @@ def salvar_termos():
             termos = file.read().decode('utf-8').splitlines()
         else:
             return jsonify({"error": "Apenas arquivos .txt são permitidos."}), 400
-
-    # Se não for um arquivo, tenta pegar os termos do JSON
     else:
         data = request.get_json()
         termos = data.get('termos', [])
@@ -65,45 +128,25 @@ def salvar_termos():
     if not termos:
         return jsonify({"error": "Nenhum termo foi enviado."}), 400
 
-    # Processa os termos
-    print("Termos recebidos:", termos)
+    # Verifica se o caminho do arquivo PDF foi passado
+    file_path = get_last_uploaded_file()
 
-    texto = session.get('texto', '')  # Obtém o texto armazenado na sessão
-    print(texto)
+    if file_path and os.path.exists(file_path):
+    # Aqui você pode fazer o que precisa com o arquivo
+        print(f"Último arquivo salvo: {file_path}")
+    else:
+        print("Nenhum arquivo encontrado.")
 
-    pares_encontrados = encontrar_pares_termos(texto, termos)
+    # Abre o arquivo PDF e processa as páginas
+    pdf_reader = PyPDF2.PdfReader(file_path)
+    pares_encontrados = encontrar_pares_termos(pdf_reader, termos)
+
+    # Salva as relações encontradas na sessão
     session['relacoes_encontradas'] = pares_encontrados
     session['termos'] = termos
-    
-    print("cheguei")
-    return redirect(url_for('validacao_relacao'))
 
+    return redirect(url_for('validacaoRelacao'))
 
-
-@app.route("/process_file", methods=["POST"])
-def process_file():
-    print("Requisicao chegou")
-    if "file" not in request.files:
-        print("Nehum arquivo chegou")
-        return jsonify({"error": "Nenhum arquivo enviado"}), 400
-
-    file = request.files["file"]  # Obtém o arquivo enviado
-    print(f"Arquivo recebido: {file.filename}")
-
-    if file.filename == "":
-        return jsonify({"error": "Nome do arquivo inválido"}), 400
-
-    if file and file.filename.endswith(".pdf"):  # Verifica se é um PDF
-        pdf_reader = PyPDF2.PdfReader(io.BytesIO(file.read()))  # Lê o PDF da memória
-        text = "\n".join([page.extract_text() for page in pdf_reader.pages if page.extract_text()])  # Extrai texto
-
-        # Aqui você pode rodar seu algoritmo no texto extraído
-        resultado = {"texto_extraido": text[:500]}
-        session['texto'] = text # Retorna apenas os primeiros 500 caracteres para visualização
-
-        return jsonify(resultado)  # Envia a resposta para o frontend
-
-    return jsonify({"error": "Apenas arquivos PDF são suportados"}), 400
 
 @app.route("/salvar_validacao", methods=["POST"])
 def salvar_validacao():
@@ -129,7 +172,7 @@ def sobre():
     return render_template('sobre.html')
 
 @app.route('/validacaoRelacao')
-def validacao_relacao():
+def validacaoRelacao():
     # Recupera as relações de termos encontradas da sessão
     relacoes = session.get("relacoes_encontradas", [])
     print(relacoes)
@@ -207,7 +250,7 @@ def cadastro():
                 isbn_canonico = canonical(isbn)
                 if not (is_isbn10(isbn_canonico) or is_isbn13(isbn_canonico)):
                     flash("ISBN inválido!", "error")
-                    return redirect(url_for('cadastro'))
+                    
 
                 novo_livro = Livro(
                     Editora=editora,
@@ -228,7 +271,7 @@ def cadastro():
 
                 if doi_response.status_code != 200 or not doi_response.json().get('message', {}).get('DOI'):
                     flash("DOI inválido ou não encontrado.", "danger")
-                    return redirect(url_for('cadastro'))
+                    
 
                 novo_artigo = Artigo(
                     Revista=revista,
@@ -293,4 +336,3 @@ def cadastroRelacao():
 
 
     
-

@@ -111,13 +111,13 @@ input[name="ano"] {
 
 input[name="autor[]"] {
 
-    width: 500px;
+    width: 35%;
 
 }
 
 input[name="titulo"] {
 
-    width: 500px;
+    width: 35%;
 
 }
 

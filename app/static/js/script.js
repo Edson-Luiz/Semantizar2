@@ -96,6 +96,83 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// CODIGO DE ADICIONAR TERMOS
+
+const termos = []; // Vetor para armazenar os termos adicionados
+const termoInput = document.getElementById("termoInput");
+const termosLista = document.getElementById("termosLista");
+const finalizarBtn = document.getElementById("finalizarBtn");
+
+// Função para adicionar termo
+function adicionarTermo() {
+    const termo = termoInput.value.trim();
+
+    if (termo && !termos.includes(termo)) {
+        termos.push(termo);
+        atualizarListaTermos();
+        termoInput.value = ""; // Limpar campo de input
+        termoInput.focus();
+    }
+}
+
+// Função para remover um termo
+function removerTermo(index) {
+    termos.splice(index, 1);
+    atualizarListaTermos();
+}
+
+// Função para atualizar a lista de termos
+function atualizarListaTermos() {
+    termosLista.innerHTML = ""; // Limpar a lista antes de atualizar
+    termos.forEach((termo, index) => {
+        const li = document.createElement("li");
+        li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
+        li.textContent = termo;
+
+        const excluirBtn = document.createElement("button");
+        excluirBtn.classList.add("btn", "btn-danger", "btn-sm");
+        excluirBtn.id = 'btn-trash';
+        excluirBtn.innerHTML = '<i class="bi bi-trash-fill"></i>';
+        excluirBtn.onclick = () => removerTermo(index);
+
+        li.appendChild(excluirBtn);
+        termosLista.appendChild(li);
+    });
+
+    // Habilitar o botão de finalizar se houver termos
+    finalizarBtn.disabled = termos.length === 0;
+}
+
+// Função para finalizar o cadastro
+function finalizarCadastro() {
+    if (termos.length === 0) {
+        alert("Adicione ao menos um termo antes de finalizar!");
+        return;
+    }
+
+    // Envia os termos para o backend usando fetch
+    fetch("/salvar_termos", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ termos }) // Envia os termos no corpo da requisição
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log("Termos enviados:", termos);
+
+            window.location.href = "/validacaoRelacao";
+        } else {
+            alert("Erro ao enviar os termos.");
+        }
+    })
+    .catch(error => {
+        console.error("Erro na requisição:", error);
+        alert("Erro ao enviar os termos.");
+    });
+}
+
 // CÓDIGO PARA ADICIONAR O ARQUIVO .TXT
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -188,7 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             console.log("Arquivo .txt enviado com sucesso:", data);
 
-            window.location.href = "/validacao_relacao";
+            window.location.href = "/validacaoRelacao";
         })
         .catch(error => {
             console.error("Erro ao enviar o arquivo:", error);
@@ -234,82 +311,6 @@ function removeAuthor(authorGroup) {
     authorGroup.remove();
 }
 
-// CODIGO DE ADICIONAR TERMOS
-
-const termos = []; // Vetor para armazenar os termos adicionados
-const termoInput = document.getElementById("termoInput");
-const termosLista = document.getElementById("termosLista");
-const finalizarBtn = document.getElementById("finalizarBtn");
-
-// Função para adicionar termo
-function adicionarTermo() {
-    const termo = termoInput.value.trim();
-
-    if (termo && !termos.includes(termo)) {
-        termos.push(termo);
-        atualizarListaTermos();
-        termoInput.value = ""; // Limpar campo de input
-        termoInput.focus();
-    }
-}
-
-// Função para remover um termo
-function removerTermo(index) {
-    termos.splice(index, 1);
-    atualizarListaTermos();
-}
-
-// Função para atualizar a lista de termos
-function atualizarListaTermos() {
-    termosLista.innerHTML = ""; // Limpar a lista antes de atualizar
-    termos.forEach((termo, index) => {
-        const li = document.createElement("li");
-        li.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
-        li.textContent = termo;
-
-        const excluirBtn = document.createElement("button");
-        excluirBtn.classList.add("btn", "btn-danger", "btn-sm");
-        excluirBtn.id = 'btn-trash';
-        excluirBtn.innerHTML = '<i class="bi bi-trash-fill"></i>';
-        excluirBtn.onclick = () => removerTermo(index);
-
-        li.appendChild(excluirBtn);
-        termosLista.appendChild(li);
-    });
-
-    // Habilitar o botão de finalizar se houver termos
-    finalizarBtn.disabled = termos.length === 0;
-}
-
-// Função para finalizar o cadastro
-function finalizarCadastro() {
-    if (termos.length === 0) {
-        alert("Adicione ao menos um termo antes de finalizar!");
-        return;
-    }
-
-    // Envia os termos para o backend usando fetch
-    fetch("/salvar_termos", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ termos }) // Envia os termos no corpo da requisição
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log("Termos enviados:", termos);
-
-            window.location.href = "/validacao_relacao";
-        } else {
-            alert("Erro ao enviar os termos.");
-        }
-    })
-    .catch(error => {
-        console.error("Erro na requisição:", error);
-        alert("Erro ao enviar os termos.");
-    });
-}
 
 // FORMULÁRIO DE CADASTRO
 
@@ -341,14 +342,12 @@ function mostrarFormulario(id) {
         document.getElementById('titulo').setAttribute('required', 'required');
         document.getElementById('editora').setAttribute('required', 'required');
         document.getElementById('ano').setAttribute('required', 'required');
-        document.getElementById('isbn').setAttribute('required', 'required');
     } else if (id === 'formArtigo') {
         document.getElementById('titulo').setAttribute('required', 'required');
         document.getElementById('revista').setAttribute('required', 'required');
         document.getElementById('ano').setAttribute('required', 'required');
         document.getElementById('volume').setAttribute('required', 'required');
         document.getElementById('numero').setAttribute('required', 'required');
-        document.getElementById('doi').setAttribute('required', 'required');
     } else if (id === 'formDissertacao') {
         document.getElementById('titulo').setAttribute('required', 'required');
         document.getElementById('orientador').setAttribute('required', 'required');
@@ -401,7 +400,7 @@ function validarRelacao(button, isValid) {
 
 function moverValidacaoRelacao(){
 
-    window.location.href = "/validacao_relacao";
+    window.location.href = "/validacaoRelacao";
 
 }
 
