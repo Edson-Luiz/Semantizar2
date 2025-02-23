@@ -2,12 +2,13 @@
 from flask import render_template, request, redirect, url_for, flash, session
 from isbnlib import is_isbn10, is_isbn13, canonical
 import requests , PyPDF2, io, itertools
-from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao
+from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao, Relacao, TipoRelacao, PublicacaoRelacao
 import os
 import uuid
 import spacy
 import re
 import tqdm 
+from flask_session import Session
 from werkzeug.utils import secure_filename
 from collections import defaultdict
 from itertools import combinations
@@ -15,6 +16,9 @@ from itertools import combinations
 
 UPLOAD_FOLDER = 'uploads'  # Pasta para armazenar arquivos enviados
 ALLOWED_EXTENSIONS = {'pdf'}
+
+app.config['SESSION_TYPE'] = 'filesystem'
+Session(app)
 
 nlp = spacy.load("pt_core_news_sm")
 nlp.max_length = 5000000 
@@ -324,13 +328,46 @@ def cadastro():
     return render_template('cadastro.html')
 
 
-@app.route('/cadastroRelacao')
+@app.route('/cadastroRelacao', methods=['GET', 'POST'])
 def cadastroRelacao():
-    termo1 = request.args.get("termo1", "")
-    termo2 = request.args.get("termo2", "")
-    frase = request.args.get("frase", "")
-    
-    return render_template("cadastroRelacao.html", termo1=termo1, termo2=termo2, frase=frase)
+    termo1 = request.args.get('termo1')
+    termo2 = request.args.get('termo2')
+    frase = request.args.get('frase')
+
+    if request.method == 'POST':
+        try:
+            predicado = request.form.get('relacao')
+            tipo_relacao_nome = request.form.get('universidade')
+            relacao_inversa = request.form.get('relacao-inversa')
+            simetrica = request.form.get('opcao') == 'sim'
+
+            # Buscar ID do tipo de relação
+            tipo_relacao = TipoRelacao.query.filter_by(NomeTipoRelacao=tipo_relacao_nome).first()
+            id_tipo_relacao = tipo_relacao.IDTipoRelacao if tipo_relacao else None
+
+            # Criar nova relação
+            nova_relacao = Relacao(
+                IDPalavraSujeito=termo1,
+                Predicado=predicado,
+                IDPalavraObjeto=termo2,
+                IDTipoRelacao=id_tipo_relacao,
+                RelacaoInversa=relacao_inversa,
+                Simetrica=simetrica,
+            )
+
+            db.session.add(nova_relacao)
+            db.session.commit()
+            flash("Relação cadastrada com sucesso!", "success")
+            return redirect(url_for('validacaoRelacao'))
+
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Erro ao cadastrar a relação: {str(e)}", "danger")
+            return redirect(url_for('cadastroRelacao'))
+
+    return render_template('cadastroRelacao.html', termo1=termo1, termo2=termo2, frase=frase)
+
+
     
 
 

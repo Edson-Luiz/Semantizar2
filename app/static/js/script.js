@@ -383,6 +383,10 @@ function validarRelacao(button, isValid) {
         // Redireciona para a página de cadastro
         window.location.href = `/cadastroRelacao?termo1=${encodeURIComponent(termo1)}&termo2=${encodeURIComponent(termo2)}&frase=${encodeURIComponent(frase)}`;
     } else {
+        // Obtém a linha (tr) pai do botão e a remove
+        let linha = button.closest("tr");
+        linha.remove();
+
         // Envia a validação negativa para o backend
         fetch('/salvar_validacao', {
             method: "POST",
@@ -396,7 +400,6 @@ function validarRelacao(button, isValid) {
         .catch(error => console.error("Erro ao salvar validação:", error));
     }
 }
-
 
 function moverValidacaoRelacao(){
 

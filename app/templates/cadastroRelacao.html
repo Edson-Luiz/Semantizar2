@@ -39,35 +39,44 @@
     
 
     <div class="validacao">
-
         <h2>Cadastrar a relação entre "{{ termo1 }}" e "{{ termo2 }}"</h2><br>
-        
     
         <div class="validacao-text">
             <p>{{ frase }}</p><br>
-
-            <label for="relacao">Especificar a relação semântica</label><br>
-            <input type="text" id="relacao" name="relacao"><br><br>
-
-            <label for="universidade">Tipo da relação semântica</label><br>
-            <select id="universidade" name="universidade">
-                <option value="hierarquica">Hierárquica</option>
-            </select><br><br>
-
-
-            <label for="relacao-inversa">Relação inversa (se houver)</label><br>
-            <input type="text" id="relacao-inversa" name="relacao-inversa"><br><br>
-
-            <label>Propriedades</label><br>
-            <div class="radio-group">
-                <p><label for="simetrica">Simétrica:</label>  <input type="radio" id="sim" name="opcao" value="sim">  SIM <input type="radio" id="nao" name="opcao" value="nao">   NÃO</p>
-                <p><label for="simetrica">Dissertação:</label>  <input type="radio" id="sim" name="opcao" value="sim">  SIM <input type="radio" id="nao" name="opcao" value="nao">   NÃO</p>
-            </div>
-            
-            
-            <a href="#" class="button">Cadastrar</a>
+    
+            <!-- Formulário que envia os dados para a rota -->
+            <form action="cadastroRelacao" method="POST">
+                <label for="relacao">Especificar a relação semântica<abbr title="campo obrigatório">*</abbr></label><br>
+                <input type="text" id="relacao" name="relacao" required><br><br>
+    
+                <h2>Cadastro opcional:</h2>
+    
+                <label for="universidade">Tipo da relação semântica</label><br>
+                <select id="universidade" name="universidade">
+                    <option value="hierarquica">Hierárquica</option>
+                </select><br><br>
+    
+                <label for="relacao-inversa">Relação inversa (se houver)</label><br>
+                <input type="text" id="relacao-inversa" name="relacao-inversa"><br><br>
+    
+                <label>Propriedades</label><br>
+                <div class="radio-group">
+                    <p>
+                        <label for="simetrica">Simétrica:</label>  
+                        <input type="radio" name="simetrica" value="sim"> SIM
+                        <input type="radio" name="simetrica" value="nao"> NÃO
+                    </p>
+                    <p>
+                        <label for="dissertacao">Dissertação:</label>  
+                        <input type="radio" name="dissertacao" value="sim"> SIM
+                        <input type="radio" name="dissertacao" value="nao"> NÃO
+                    </p>
+                </div><br>
+    
+                <!-- Botão de envio -->
+                <button type="submit" class="button">Cadastrar</button>
+            </form>
         </div>
-        
     </div>
 
     
