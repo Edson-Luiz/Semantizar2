@@ -2,7 +2,7 @@
 from flask import render_template, request, redirect, url_for, flash, session
 from isbnlib import is_isbn10, is_isbn13, canonical
 import requests , PyPDF2, io, itertools
-from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao, Relacao, TipoRelacao, PublicacaoRelacao
+from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao, Relacao, TipoRelacao, PublicacaoRelacao, Substantivo
 import os
 import uuid
 import spacy
@@ -179,8 +179,50 @@ def sobre():
 def validacaoRelacao():
     # Recupera as relações de termos encontradas da sessão
     relacoes = session.get("relacoes_encontradas", [])
-    print(relacoes)
-    return render_template('validacaoRelacao.html', relacoes=relacoes)
+
+    # Assegura que a chave 'validado' existe em todas as relações
+    for relacao in relacoes:
+        if 'validado' not in relacao:
+            relacao['validado'] = False  # Define 'validado' como False inicialmente
+
+    # Atualiza a sessão
+    session['relacoes_encontradas'] = relacoes
+
+    # Filtra as relações não validadas
+    relacoes_pendentes = [r for r in relacoes if not r['validado']]
+
+    print(relacoes_pendentes)  # Você pode remover isso após o teste
+
+    return render_template('validacaoRelacao.html', relacoes=relacoes_pendentes)
+
+
+
+@app.route('/validarRelacao', methods=['POST'])
+def validarRelacao():
+    try:
+        # Recupera os dados enviados
+        dados = request.get_json()
+        termo1 = dados['termo1']
+        termo2 = dados['termo2']
+        frase = dados['frase']
+
+        # Recupera as relações de termos encontradas da sessão
+        relacoes = session.get("relacoes_encontradas", [])
+
+        # Atualiza o status de validação da relação
+        for relacao in relacoes:
+            if relacao['termo1'] == termo1 and relacao['termo2'] == termo2 and relacao['frase'] == frase:
+                relacao['validado'] = True
+
+        # Atualiza a sessão
+        session['relacoes_encontradas'] = relacoes
+
+        return jsonify({"success": True})
+
+    except Exception as e:
+        print(f"Erro ao validar a relação: {str(e)}")
+        return jsonify({"success": False, "message": str(e)})
+
 
 @app.route('/visualizacao')
 def visualizacao():
@@ -330,42 +372,80 @@ def cadastro():
 
 @app.route('/cadastroRelacao', methods=['GET', 'POST'])
 def cadastroRelacao():
-    termo1 = request.args.get('termo1')
-    termo2 = request.args.get('termo2')
-    frase = request.args.get('frase')
+    # Captura os dados passados pela URL
+    termo1 = request.args.get('termo1', type=str)
+    termo2 = request.args.get('termo2', type=str)
+    frase = request.args.get('frase', type=str)
+
+    print(f"URL recebida: {request.url}")
+    print(f"Termo1: {repr(termo1)}")
+    print(f"Termo2: {repr(termo2)}")
+    print(f"Frase: {repr(frase)}")
 
     if request.method == 'POST':
         try:
-            predicado = request.form.get('relacao')
-            tipo_relacao_nome = request.form.get('universidade')
-            relacao_inversa = request.form.get('relacao-inversa')
-            simetrica = request.form.get('opcao') == 'sim'
+            # Garantir que os valores não sejam None, já que podem vir via GET
+            termo1 = request.form.get('termo1', termo1)
+            termo2 = request.form.get('termo2', termo2)
+            frase = request.form.get('frase', frase)
 
-            # Buscar ID do tipo de relação
+            print(f"Valores recebidos: termo1={termo1}, termo2={termo2}, frase={frase}")
+
+            if not termo1 or not termo2:
+                raise ValueError("Os termos não podem ser nulos!")
+            
+            # Verificar se os termos já existem na tabela Substantivo
+            termo1_existente = db.session.query(Substantivo).filter_by(NomeSubstantivo=termo1).first()
+            termo2_existente = db.session.query(Substantivo).filter_by(NomeSubstantivo=termo2).first()
+
+            # Se o termo1 não existir, criar novo
+            if not termo1_existente:
+                termo1_existente = Substantivo(NomeSubstantivo=termo1)
+                db.session.add(termo1_existente)
+
+            # Se o termo2 não existir, criar novo
+            if not termo2_existente:
+                termo2_existente = Substantivo(NomeSubstantivo=termo2)
+                db.session.add(termo2_existente)
+
+            # Commit para salvar os termos no banco de dados
+            db.session.commit()
+
+            # Captura os dados do formulário
+            predicado = request.form.get('relacao')
+            tipo_relacao_nome = request.form.get('tiporelacao')
+            relacao_inversa = request.form.get('relacao-inversa')
+            simetrica = request.form.get('simetrica') == 'sim'
+            reflexiva = request.form.get('reflexiva') == 'sim'
+
             tipo_relacao = TipoRelacao.query.filter_by(NomeTipoRelacao=tipo_relacao_nome).first()
             id_tipo_relacao = tipo_relacao.IDTipoRelacao if tipo_relacao else None
 
-            # Criar nova relação
+            # Criar a nova relação
             nova_relacao = Relacao(
-                IDPalavraSujeito=termo1,
+                IDPalavraSujeito=termo1_existente.IDSubstantivo,
                 Predicado=predicado,
-                IDPalavraObjeto=termo2,
+                IDPalavraObjeto=termo2_existente.IDSubstantivo,
                 IDTipoRelacao=id_tipo_relacao,
                 RelacaoInversa=relacao_inversa,
                 Simetrica=simetrica,
+                Reflexiva=reflexiva,
             )
 
             db.session.add(nova_relacao)
             db.session.commit()
+
             flash("Relação cadastrada com sucesso!", "success")
             return redirect(url_for('validacaoRelacao'))
 
         except Exception as e:
             db.session.rollback()
+            print(f"Erro ao cadastrar a relação: {str(e)}")
             flash(f"Erro ao cadastrar a relação: {str(e)}", "danger")
-            return redirect(url_for('cadastroRelacao'))
+            return redirect(url_for('cadastroRelacao', termo1=termo1, termo2=termo2, frase=frase))
 
     return render_template('cadastroRelacao.html', termo1=termo1, termo2=termo2, frase=frase)
+
 
 
     

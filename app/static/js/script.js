@@ -150,6 +150,9 @@ function finalizarCadastro() {
         return;
     }
 
+    // Mostra o indicador de carregamento
+    mostrarCarregamento();
+
     // Envia os termos para o backend usando fetch
     fetch("/salvar_termos", {
         method: "POST",
@@ -161,16 +164,21 @@ function finalizarCadastro() {
     .then(response => {
         if (response.ok) {
             console.log("Termos enviados:", termos);
-
             window.location.href = "/validacaoRelacao";
         } else {
             alert("Erro ao enviar os termos.");
+            document.getElementById("loading").style.display = "none"; // Oculta o carregamento em caso de erro
         }
     })
     .catch(error => {
         console.error("Erro na requisição:", error);
         alert("Erro ao enviar os termos.");
+        document.getElementById("loading").style.display = "none"; // Oculta o carregamento em caso de erro
     });
+}
+
+function mostrarCarregamento() {
+    document.getElementById("loading").style.display = "block"; // Mostra o indicador de carregamento
 }
 
 // CÓDIGO PARA ADICIONAR O ARQUIVO .TXT
@@ -374,16 +382,30 @@ document.querySelector('form').addEventListener('submit', function(event) {
 });
 
 function validarRelacao(button, isValid) {
-    // Obtém os valores dos atributos data
     let termo1 = button.getAttribute("data-termo1");
     let termo2 = button.getAttribute("data-termo2");
     let frase = button.getAttribute("data-frase");
 
     if (isValid) {
-        // Redireciona para a página de cadastro
-        window.location.href = `/cadastroRelacao?termo1=${encodeURIComponent(termo1)}&termo2=${encodeURIComponent(termo2)}&frase=${encodeURIComponent(frase)}`;
+        // Marcar como validado na sessão
+        fetch('/validarRelacao', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ termo1, termo2, frase })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redireciona para a página de cadastro, passando os parâmetros
+                window.location.href = `/cadastroRelacao?termo1=${encodeURIComponent(termo1)}&termo2=${encodeURIComponent(termo2)}&frase=${encodeURIComponent(frase)}`;
+            } else {
+                alert('Erro ao validar a relação');
+            }
+        })
+        .catch(error => console.error("Erro ao enviar validação:", error));
     } else {
-        // Obtém a linha (tr) pai do botão e a remove
         let linha = button.closest("tr");
         linha.remove();
 
@@ -401,10 +423,8 @@ function validarRelacao(button, isValid) {
     }
 }
 
-function moverValidacaoRelacao(){
-
-    window.location.href = "/validacaoRelacao";
-
+function moverValidacaoRelacao() {
+    mostrarCarregamento(); // Exibe o carregamento
 }
 
 //CÓDIGO PARA ADICIONAR AUTORES

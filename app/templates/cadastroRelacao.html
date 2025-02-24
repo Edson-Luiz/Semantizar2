@@ -46,13 +46,17 @@
     
             <!-- Formulário que envia os dados para a rota -->
             <form action="cadastroRelacao" method="POST">
+
+                <input type="hidden" name="termo1" value="{{ termo1 }}">
+                <input type="hidden" name="termo2" value="{{ termo2 }}">
+
                 <label for="relacao">Especificar a relação semântica<abbr title="campo obrigatório">*</abbr></label><br>
                 <input type="text" id="relacao" name="relacao" required><br><br>
     
                 <h2>Cadastro opcional:</h2>
     
-                <label for="universidade">Tipo da relação semântica</label><br>
-                <select id="universidade" name="universidade">
+                <label for="tiporelacao">Tipo da relação semântica</label><br>
+                <select id="tiporelacao" name="tiporelacao">
                     <option value="hierarquica">Hierárquica</option>
                 </select><br><br>
     
