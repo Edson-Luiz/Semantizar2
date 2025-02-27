@@ -620,14 +620,6 @@ button#finalizarBtnAutores {
     padding: 5px;
     font-size: 15px;
     border-radius: 10px;
-    background-color: rgb(29, 119, 29);
-
-}
-
-button:hover#finalizarBtnAutores {
-
-
-    background-color: rgb(47, 112, 47);
 
 }
 

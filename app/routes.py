@@ -7,7 +7,8 @@ import os
 import uuid
 import spacy
 import re
-import tqdm 
+import tqdm
+import unidecode
 from flask_session import Session
 from werkzeug.utils import secure_filename
 from collections import defaultdict
@@ -48,39 +49,53 @@ def get_last_uploaded_file():
         print(f"Erro ao tentar pegar o último arquivo: {e}")
         return None
 
+def normalizar_texto(text):
+    text = unidecode.unidecode(text)  # Remove acentos
+    text = text.lower()  # Tudo em minúsculas
+    text = re.sub(r'\s+', ' ', text)  # Substitui múltiplos espaços por um único  
+    return text.strip()
 
+# Função para encontrar pares de termos no PDF
 def encontrar_pares_termos(pdf_reader, termos):
     pares_encontrados = []
     termo_ocorrencias = defaultdict(list)  # Armazena os índices e frases correspondentes
-    
     frases_total = []  # Lista global para armazenar todas as frases extraídas
 
+    # Extração de texto das páginas do PDF
     for page_num, page in enumerate(pdf_reader.pages):
         text = page.extract_text()
-        
         if text:
-            doc = nlp(text)
-            frases = [sent.text for sent in doc.sents]
-            
-            for i, frase in enumerate(frases):
-                frases_total.append(frase)  # Armazena a frase com índice global
-                
-                palavras = set([token.text.lower() for token in nlp(frase) if token.is_alpha])
+            text = normalizar_texto(text)  # Normaliza o texto extraído
+            doc = nlp(text)  # Usa o spaCy para segmentar em frases
 
+            # Segmenta corretamente o texto em frases usando o spaCy
+            for sent in doc.sents:
+                frase = normalizar_texto(sent.text)  # Normaliza cada frase
+
+                frases_total.append(frase)  # Armazena todas as frases
+
+                # Para cada termo, verifica se ele está na frase
                 for termo in termos:
-                    if termo.lower() in palavras:
-                        termo_ocorrencias[termo].append(len(frases_total) - 1)  # Salva índice global
+                    if normalizar_texto(termo) in frase:  # Verifica se o termo está na frase
+                        termo_ocorrencias[termo].append(len(frases_total) - 1)
 
-    # Comparação entre pares de termos
-    for termo1, termo2 in itertools.combinations(termos, 2):
-        frases_comuns = set(termo_ocorrencias[termo1]) & set(termo_ocorrencias[termo2])
-        
+    # Comparação apenas entre pares de termos
+    for termo1, termo2 in itertools.combinations(termos, 2):  # Apenas pares de termos
+        frases_comuns = set(termo_ocorrencias[termo1]) & set(termo_ocorrencias[termo2])  # Interseção de frases
+
         for i in frases_comuns:
-            if i < len(frases_total):  # Garante que o índice existe
-                pares_encontrados.append({"termo1": termo1, "termo2": termo2, "frase": frases_total[i]})
+            if i < len(frases_total):  # Verifica se o índice é válido
+                pares_encontrados.append({
+                    "termo1": termo1,
+                    "termo2": termo2,
+                    "frase": frases_total[i]
+                })
+
+    print(f"📌 Total de frases analisadas: {len(frases_total)}")
+    print(f"📌 Ocorrências de termos: {dict(termo_ocorrencias)}")
+    print(f"✅ Pares encontrados: {pares_encontrados}")
 
     return pares_encontrados
-
 
 
 @app.route("/process_file", methods=["POST"])
@@ -129,27 +144,39 @@ def salvar_termos():
         data = request.get_json()
         termos = data.get('termos', [])
 
+    # Verifica se a lista de termos está vazia
     if not termos:
         return jsonify({"error": "Nenhum termo foi enviado."}), 400
 
-    # Verifica se o caminho do arquivo PDF foi passado
+    # Verifica se há um arquivo PDF válido salvo
     file_path = get_last_uploaded_file()
 
-    if file_path and os.path.exists(file_path):
-    # Aqui você pode fazer o que precisa com o arquivo
-        print(f"Último arquivo salvo: {file_path}")
-    else:
-        print("Nenhum arquivo encontrado.")
+    if not file_path or not os.path.exists(file_path):
+        return jsonify({"error": "Nenhum arquivo PDF encontrado."}), 400
 
-    # Abre o arquivo PDF e processa as páginas
-    pdf_reader = PyPDF2.PdfReader(file_path)
+    print(f"📂 Último arquivo salvo: {file_path}")
+
+    # Abre o arquivo PDF e processa as páginas com tratamento de erro
+    try:
+        pdf_reader = PyPDF2.PdfReader(file_path)
+        if len(pdf_reader.pages) == 0:
+            return jsonify({"error": "O arquivo PDF está vazio."}), 400
+    except Exception as e:
+        return jsonify({"error": f"Erro ao ler o PDF: {str(e)}"}), 400
+
+    # Busca pares de termos no PDF
     pares_encontrados = encontrar_pares_termos(pdf_reader, termos)
 
-    # Salva as relações encontradas na sessão
+    # Salva os resultados na sessão
     session['relacoes_encontradas'] = pares_encontrados
     session['termos'] = termos
 
+    print("Relacoes encontradas:", session.get('relacoes_encontradas'))
+    print("Termos:", session.get('termos'))
+
+    # Redireciona para a página de validação
     return redirect(url_for('validacaoRelacao'))
+
 
 
 @app.route("/salvar_validacao", methods=["POST"])

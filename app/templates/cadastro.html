@@ -59,13 +59,13 @@
             <!-- Container para adicionar autores -->
                 <div id="authors-container">
                         
-                    <label for="autor">Autores <abbr title="campo obrigatório">*</abbr></label><br>
+                    <label for="autor">Pessoas autoras <abbr title="campo obrigatório">*</abbr></label><br>
                     <input type="text" id="autorInput" name="autor[]" placeholder="Digite o nome do autor(a)" required aria-required="true">
-                    <span id="btn-add" onclick="addAuthor()">Adicionar autor(a)</span><br>
+                    <span id="btn-add" onclick="addAuthor()">Adicionar pessoas autoras</span><br>
 
                     <ul id="autoresLista" class="list-group mt-2"></ul>
 
-                    <button id="finalizarBtnAutores" class="btn btn-success" onclick="finalizarCadastroAutores()" style="margin-bottom: 20px;">Salvar autor(es)</button>
+                    <button id="finalizarBtnAutores" class="btn btn-success" onclick="finalizarCadastroAutores()" style="margin-bottom: 20px; display: none;">Salvar pessoas autoras</button>
                     
                 </div>
 

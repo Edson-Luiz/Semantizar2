@@ -31,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
             fileUploadBtn.files = files;
             selectedFile = files[0];
             fileNameDisplay.innerHTML = `<p>Arquivo selecionado: ${files[0].name}</p>`;
+            
         } else {
             resetFileSelection("Por favor, envie apenas arquivos PDF.");
         }
@@ -67,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
         fileInput.value = "";
         fileUploadBtn.value = "";
     }
+    
 
     // Enviar apenas quando o botão for clicado
     sendButton.addEventListener("click", () => {
@@ -110,6 +112,7 @@ function adicionarTermo() {
     if (termo && !termos.includes(termo)) {
         termos.push(termo);
         atualizarListaTermos();
+        document.getElementById("finalizarBtn").style.display = 'inline-block';
         termoInput.value = ""; // Limpar campo de input
         termoInput.focus();
     }
@@ -214,6 +217,9 @@ document.addEventListener("DOMContentLoaded", function () {
             fileUploadBtn.files = files;
             selectedFile = files[0];
             fileNameDisplay.innerHTML = `<p>Arquivo selecionado: ${files[0].name}</p>`;
+            
+            // Mostrar o botão de envio após a seleção de um arquivo válido
+            sendButton.style.display = "inline-block"; // Exibir o botão
         } else {
             resetFileSelection("Por favor, envie apenas arquivos TXT.");
         }
@@ -239,6 +245,9 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 fileInput.files = fileUploadBtn.files;
             }
+
+            // Mostrar o botão de envio após a seleção de um arquivo válido
+            sendButton.style.display = "inline-block"; // Exibir o botão
         } else {
             resetFileSelection("Por favor, envie apenas arquivos TXT.");
         }
@@ -249,6 +258,9 @@ document.addEventListener("DOMContentLoaded", function () {
         fileNameDisplay.innerHTML = `<p style="color: red;">${message}</p>`;
         fileInput.value = "";
         fileUploadBtn.value = "";
+
+        // Ocultar o botão de envio novamente se o arquivo for inválido
+        sendButton.style.display = "none";
     }
 
     // Enviar apenas quando o botão for clicado
@@ -264,23 +276,39 @@ document.addEventListener("DOMContentLoaded", function () {
     function sendFileToServerTXT(file) {
         const formData = new FormData();
         formData.append("file", file);
-
+    
         fetch("/salvar_termos", {
             method: "POST",
             body: formData
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log("Status da resposta:", response.status);  // Exibe o status da resposta
+            window.location.href = "/validacaoRelacao"; 
+            // Se o status de resposta for 3xx, significa que é um redirecionamento
+            if (response.status >= 300 && response.status < 400) {
+                window.location.href = response.url;  // Faz o redirecionamento para a URL correta
+            } else {
+                return response.text();  // Caso contrário, processa como texto
+            }
+        })
         .then(data => {
-            console.log("Arquivo .txt enviado com sucesso:", data);
-
-            window.location.href = "/validacaoRelacao";
+            console.log("Resposta recebida:", data);
+            // Se a resposta for um erro, ele será tratado aqui
+            try {
+                const jsonData = JSON.parse(data);  // Tenta fazer o parse para JSON se houver dados
+                console.log("JSON processado:", jsonData);
+                if (jsonData.success) {
+                    window.location.href = "/validacaoRelacao";  // Redireciona se tudo estiver certo
+                }
+            } catch (e) {
+                console.error("Erro ao tentar parsear o JSON:", e);
+            }
         })
         .catch(error => {
             console.error("Erro ao enviar o arquivo:", error);
         });
     }
 });
-
 
 
 // CÓDIGO PARA ADICIONAR MAIS AUTORES
@@ -441,6 +469,7 @@ function addAuthor() {
     if (autor && !autores.includes(autor)) {
         autores.push(autor);
         atualizarListaAutores();
+        document.getElementById("finalizarBtnAutores").style.display = 'inline-block';
         autorInput.value = ""; // Limpar campo de input
         autorInput.focus();
     }
