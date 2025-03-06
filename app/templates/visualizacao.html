@@ -28,9 +28,7 @@
 </header>
 
 <div class="indicador-pagina">
-
   <p><a href="/">Página inicial</a> / <a href="cadastro">Cadastro</a> / <a href="cadastroTermos">Cadastro termos</a> / <a href="validacaoRelacao">Validação das relações</a> / Visualizações das relações</p>
-
 </div>
 
 <h1>Visualização das Relações</h1>
@@ -39,27 +37,64 @@
   <img class="linhacadastro" src="{{ url_for('static', filename='img/linhadecadastrosemantizar4.png') }}" alt="linha de cadastro do sistema Semantizar 2.0">
 </div>
 
-    
-    <h2>Relações Extraídas</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Termo 1</th>
-                <th>Predicado</th>
-                <th>Termo 2</th>
-            </tr>
-        </thead>
-        <tbody id="relations-table">
-            <!-- Os dados serão carregados via script.js -->
-        </tbody>
-    </table>
+<h2>Relações Extraídas</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Termo 1</th>
+            <th>Predicado</th>
+            <th>Termo 2</th>
+        </tr>
+    </thead>
+    <tbody id="relations-table">
+        <!-- Os dados serão carregados via script.js -->
+    </tbody>
+</table>
 
-    <h2>Frequência de Termos</h2>
-    <canvas id="chart"></canvas>
+<h2>Frequência de Termos</h2>
+<canvas id="chart"></canvas>
 
-    <h2>Mapa Conceitual</h2>
-    <div id="graph-container"></div>
+<h2>Mapa Conceitual</h2>
+<div id="graph-container"></div>
 
-    <script src="{{ url_for('static', filename='../static/js/script.js') }}"></script>
+<script>
+    // Função para carregar as relações e atualizar a tabela
+    async function carregarRelacoes() {
+        try {
+            // Requisição para obter as relações
+            const response = await fetch("/get_relacoes");
+            const data = await response.json();
+
+            // Verificar se a resposta contém dados
+            if (!data || data.erro) {
+                alert("Erro ao carregar as relações!");
+                return;
+            }
+
+            // Atualizar a tabela com os dados
+            const tableBody = document.getElementById("relations-table");
+            tableBody.innerHTML = ''; // Limpa a tabela antes de adicionar novos dados
+
+            // Adiciona as relações na tabela
+            data.forEach(relacao => {
+                const row = tableBody.insertRow();
+                const termo1Cell = row.insertCell(0);
+                const predicadoCell = row.insertCell(1);
+                const termo2Cell = row.insertCell(2);
+
+                termo1Cell.textContent = relacao.termo1;
+                predicadoCell.textContent = relacao.predicado;
+                termo2Cell.textContent = relacao.termo2;
+            });
+
+        } catch (error) {
+            console.error("Erro ao carregar as relações:", error);
+            alert("Houve um erro ao carregar as relações.");
+        }
+    }
+
+    // Chama a função para carregar as relações assim que a página carregar
+    window.onload = carregarRelacoes;
+</script>
 </body>
 </html>
