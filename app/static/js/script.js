@@ -535,21 +535,23 @@ function finalizarCadastroAutores() {
 }
 
 
-
 // FUNÇÃO PARA CARREGAR AS VISUALIZAÇÕES
 
 async function carregarRelacoes() {
     try {
+        // Espera até que todas as relações estejam finalizadas
         const response = await fetch("/get_relacoes");
         const data = await response.json();
+        
+        // Verificar os dados recebidos 
 
         // Atualizar tabela de relações
         const tableBody = document.getElementById("relations-table");
-        tableBody.innerHTML = "";
+        let rows = "";
         data.forEach(r => {
-            let row = `<tr><td>${r.termo1}</td><td>${r.predicado}</td><td>${r.termo2}</td></tr>`;
-            tableBody.innerHTML += row;
+            rows += `<tr><td>${r.termo1}</td><td>${r.predicado}</td><td>${r.termo2}</td></tr>`;
         });
+        tableBody.innerHTML = rows;
 
         // Criar o gráfico de frequência de termos
         const termosContagem = {};
@@ -557,6 +559,9 @@ async function carregarRelacoes() {
             termosContagem[r.termo1] = (termosContagem[r.termo1] || 0) + 1;
             termosContagem[r.termo2] = (termosContagem[r.termo2] || 0) + 1;
         });
+
+        // Verificar se a contagem dos termos está correta
+        console.log(termosContagem);
 
         const labels = Object.keys(termosContagem);
         const values = Object.values(termosContagem);
@@ -579,6 +584,9 @@ async function carregarRelacoes() {
             nodes: labels.map(t => ({ id: t })),
             links: data.map(r => ({ source: r.termo1, target: r.termo2 }))
         };
+
+        // Verificar se os dados do gráfico estão corretos
+        console.log(graphData);
 
         const svg = d3.select("#graph-container").html("").append("svg").attr("width", "100%").attr("height", 500);
         const simulation = d3.forceSimulation(graphData.nodes)
@@ -605,8 +613,6 @@ async function carregarRelacoes() {
 
             node.attr("cx", d => d.x)
                 .attr("cy", d => d.y);
-
-        
         });
 
     } catch (error) {
@@ -614,9 +620,11 @@ async function carregarRelacoes() {
     }
 }
 
-document.addEventListener("DOMContentLoaded", carregarRelacoes);
-
 function finalizarValidacao() {
     // Redireciona para a página de visualização
+    carregarRelacoes();
     window.location.href = "/visualizacao";
+    
 }
+
+// Alterei para garantir que o carregamento dos dados ocorre após a página carregar

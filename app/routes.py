@@ -2,7 +2,7 @@
 from flask import render_template, request, redirect, url_for, flash, session
 from isbnlib import is_isbn10, is_isbn13, canonical
 import requests , PyPDF2, io, itertools
-from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao, Relacao, TipoRelacao, PublicacaoRelacao, Substantivo
+from app import app, jsonify, db, Autor, DocAcademico, Publicacao, Livro, Universidade, Artigo, AutorPublicacao, Relacao, TipoRelacao, PublicacaoRelacao, Substantivo, relacoes_temporarias
 import os
 import uuid
 import spacy
@@ -257,20 +257,31 @@ def visualizacao():
 
 @app.route('/get_relacoes')
 def get_relacoes():
+    global relacoes_temporarias
+
     try:
-        relacoes = db.session.query(
-            Relacao.IDPalavraSujeito,
-            Substantivo.NomeSubstantivo.label("termo1"),
-            Relacao.Predicado,
-            Substantivo.NomeSubstantivo.label("termo2")
-        ).join(Substantivo, Relacao.IDPalavraObjeto == Substantivo.IDSubstantivo) \
-        .order_by(Relacao.IDRelacao.desc()) \
-        .limit(10).all()
+        print("Tentando recuperar relações temporárias...")
+        print(f"Conteúdo de relacoes_temporarias: {relacoes_temporarias}")
 
-        resultado = [{"termo1": r.termo1, "predicado": r.Predicado, "termo2": r.termo2} for r in relacoes]
+        # Verifica se a variável global existe
+        if not isinstance(relacoes_temporarias, list):
+            raise ValueError("relacoes_temporarias não está definida corretamente")
 
-        return jsonify(resultado)
+        # Converter todos os dados para string
+        relacoes_serializadas = [
+            {
+                "termo1": str(relacao.get("termo1", "")),
+                "predicado": str(relacao.get("predicado", "")),
+                "termo2": str(relacao.get("termo2", ""))
+            }
+            for relacao in relacoes_temporarias
+        ]
+
+        print("Relações serializadas com sucesso!")
+        return jsonify(relacoes_serializadas)
+
     except Exception as e:
+        print(f"Erro em /get_relacoes: {e}")
         return jsonify({"erro": str(e)}), 500
 
 # Rota para a página "Contato"
@@ -433,12 +444,15 @@ def cadastroRelacao():
 
     if request.method == 'POST':
         try:
+            global relacoes_temporarias
             # Garantir que os valores não sejam None, já que podem vir via GET
             termo1 = request.form.get('termo1', termo1)
             termo2 = request.form.get('termo2', termo2)
             frase = request.form.get('frase', frase)
 
             print(f"Valores recebidos: termo1={termo1}, termo2={termo2}, frase={frase}")
+
+            
 
             if not termo1 or not termo2:
                 raise ValueError("Os termos não podem ser nulos!")
@@ -483,6 +497,14 @@ def cadastroRelacao():
 
             db.session.add(nova_relacao)
             db.session.commit()
+
+            relacoes_temporarias.append({
+                "termo1": termo1,
+                "predicado": predicado,
+                "termo2": termo2
+            })
+
+            print("Nova relação cadastrada:", relacoes_temporarias)
 
             flash("Relação cadastrada com sucesso!", "success")
             return redirect(url_for('validacaoRelacao'))
