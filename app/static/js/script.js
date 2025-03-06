@@ -14,13 +14,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Adicionar/remover classe para estilizar ao arrastar
-    ["dragenter", "dragover"].forEach(eventName => {
-        dragArea.classList.add("drag-over");
-    });
-
-    ["dragleave", "drop"].forEach(eventName => {
-        dragArea.classList.remove("drag-over");
-    });
+    dragArea.addEventListener("dragenter", () => dragArea.classList.add("drag-over"));
+    dragArea.addEventListener("dragover", () => dragArea.classList.add("drag-over"));
+    dragArea.addEventListener("dragleave", () => dragArea.classList.remove("drag-over"));
+    dragArea.addEventListener("drop", () => dragArea.classList.remove("drag-over"));
 
     // Capturar arquivos ao soltar
     dragArea.addEventListener("drop", e => {
@@ -31,14 +28,14 @@ document.addEventListener("DOMContentLoaded", function () {
             fileUploadBtn.files = files;
             selectedFile = files[0];
             fileNameDisplay.innerHTML = `<p>Arquivo selecionado: ${files[0].name}</p>`;
-            
         } else {
             resetFileSelection("Por favor, envie apenas arquivos PDF.");
         }
     });
 
-    // Abrir seletor de arquivo ao clicar na área
-    dragArea.addEventListener("click", () => fileInput.click());
+    // Remover a opção de clicar na área drag
+    // Não há mais necessidade do código abaixo, já que não queremos que a área drag funcione como um botão de upload
+    // dragArea.addEventListener("click", () => fileInput.click());
 
     // Mostrar o nome do arquivo selecionado manualmente no input personalizado
     fileInput.addEventListener("change", handleFileSelection);
@@ -68,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
         fileInput.value = "";
         fileUploadBtn.value = "";
     }
-    
 
     // Enviar apenas quando o botão for clicado
     sendButton.addEventListener("click", () => {
@@ -97,6 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
 
 // CODIGO DE ADICIONAR TERMOS
 
@@ -135,7 +132,7 @@ function atualizarListaTermos() {
         const excluirBtn = document.createElement("button");
         excluirBtn.classList.add("btn", "btn-danger", "btn-sm");
         excluirBtn.id = 'btn-trash';
-        excluirBtn.innerHTML = '<i class="bi bi-trash-fill"></i>';
+        excluirBtn.innerHTML = '<i class="bi bi-trash-fill" style="color: red;"></i>';
         excluirBtn.onclick = () => removerTermo(index);
 
         li.appendChild(excluirBtn);
@@ -492,7 +489,7 @@ function atualizarListaAutores() {
         const excluirBtn = document.createElement("button");
         excluirBtn.classList.add("btn", "btn-danger", "btn-sm");
         excluirBtn.id = 'btn-trash';
-        excluirBtn.innerHTML = '<i class="bi bi-trash-fill"></i>';
+        excluirBtn.innerHTML = '<i class="bi bi-trash-fill" style="color: red;"></i>';
         excluirBtn.onclick = () => removerAutor(index);
 
         li.appendChild(excluirBtn);
@@ -503,7 +500,9 @@ function atualizarListaAutores() {
 
 // Função para finalizar o cadastro de autores usando FormData
 function finalizarCadastroAutores() {
-    if (autores.length === 0) {
+    console.log("Lista de autores antes da verificação:", autores);
+
+    if (!Array.isArray(autores) || autores.length === 0 || autores.every(a => a.trim() === "")) {
         alert("Adicione ao menos um autor antes de finalizar!");
         return;
     }
@@ -515,27 +514,109 @@ function finalizarCadastroAutores() {
         formData.append("autores[]", autor);
     });
 
-    for (let pair of formData.entries()) {
-        console.log(pair[0], pair[1]);
-    }
+    console.log("Autores enviados:", autores);
 
     // Envia os autores para o backend usando fetch
     fetch("/salvar_autores", {
         method: "POST",
-        body: formData // Envia como FormData
+        body: formData
     })
     .then(response => {
         if (response.ok) {
-            console.log("Autores enviados:", autores);
-
-            alert("Autores enviados", autores)
-
+            alert("Autores enviados com sucesso!");
         } else {
             alert("Erro ao enviar os autores.");
         }
     })
     .catch(error => {
         console.error("Erro na requisição:", error);
-        alert("Erro ao enviar os autores.", error);
+        alert("Erro ao enviar os autores.");
     });
+}
+
+
+
+// FUNÇÃO PARA CARREGAR AS VISUALIZAÇÕES
+
+async function carregarRelacoes() {
+    try {
+        const response = await fetch("/get_relacoes");
+        const data = await response.json();
+
+        // Atualizar tabela de relações
+        const tableBody = document.getElementById("relations-table");
+        tableBody.innerHTML = "";
+        data.forEach(r => {
+            let row = `<tr><td>${r.termo1}</td><td>${r.predicado}</td><td>${r.termo2}</td></tr>`;
+            tableBody.innerHTML += row;
+        });
+
+        // Criar o gráfico de frequência de termos
+        const termosContagem = {};
+        data.forEach(r => {
+            termosContagem[r.termo1] = (termosContagem[r.termo1] || 0) + 1;
+            termosContagem[r.termo2] = (termosContagem[r.termo2] || 0) + 1;
+        });
+
+        const labels = Object.keys(termosContagem);
+        const values = Object.values(termosContagem);
+
+        const ctx = document.getElementById("chart").getContext("2d");
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Ocorrências",
+                    data: values,
+                    backgroundColor: "blue"
+                }]
+            }
+        });
+
+        // Criar o mapa conceitual
+        const graphData = {
+            nodes: labels.map(t => ({ id: t })),
+            links: data.map(r => ({ source: r.termo1, target: r.termo2 }))
+        };
+
+        const svg = d3.select("#graph-container").html("").append("svg").attr("width", "100%").attr("height", 500);
+        const simulation = d3.forceSimulation(graphData.nodes)
+            .force("link", d3.forceLink(graphData.links).id(d => d.id))
+            .force("charge", d3.forceManyBody())
+            .force("center", d3.forceCenter(window.innerWidth / 2, 250));
+
+        const link = svg.selectAll("line")
+            .data(graphData.links)
+            .enter().append("line")
+            .style("stroke", "black");
+
+        const node = svg.selectAll("circle")
+            .data(graphData.nodes)
+            .enter().append("circle")
+            .attr("r", 10)
+            .style("fill", "blue");
+
+        simulation.on("tick", () => {
+            link.attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node.attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+
+        
+        });
+
+    } catch (error) {
+        console.error("Erro ao carregar os dados:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", carregarRelacoes);
+
+function finalizarValidacao() {
+    // Redireciona para a página de visualização
+    window.location.href = "/visualizacao";
 }

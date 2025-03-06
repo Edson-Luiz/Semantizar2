@@ -255,6 +255,24 @@ def validarRelacao():
 def visualizacao():
     return render_template('visualizacao.html')
 
+@app.route('/get_relacoes')
+def get_relacoes():
+    try:
+        relacoes = db.session.query(
+            Relacao.IDPalavraSujeito,
+            Substantivo.NomeSubstantivo.label("termo1"),
+            Relacao.Predicado,
+            Substantivo.NomeSubstantivo.label("termo2")
+        ).join(Substantivo, Relacao.IDPalavraObjeto == Substantivo.IDSubstantivo) \
+        .order_by(Relacao.IDRelacao.desc()) \
+        .limit(10).all()
+
+        resultado = [{"termo1": r.termo1, "predicado": r.Predicado, "termo2": r.termo2} for r in relacoes]
+
+        return jsonify(resultado)
+    except Exception as e:
+        return jsonify({"erro": str(e)}), 500
+
 # Rota para a página "Contato"
 @app.route('/contato')
 def contato():
@@ -285,6 +303,10 @@ def cadastro():
             titulo = request.form['titulo']
             # Recebe os autores do corpo da requisição JSON
             autores = session.pop('autores', [])
+            if not autores:  # Verifica se a lista está vazia
+                flash("Erro: A publicação precisa ter pelo menos um autor. (Clique em adicionar pessoas autoras)", "danger")
+                return redirect(url_for('cadastro'))
+            
             print("Autores recebidos:", autores)
             ano = int(request.form['ano'])
 
