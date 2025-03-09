@@ -310,6 +310,9 @@ def cadastro():
         try:
             # Recebe os dados enviados via JSON
 
+            global relacoes_temporarias
+            relacoes_temporarias = []
+
             tipo = request.form['tipo']  # Identifica se é livro, artigo ou doc acadêmico
             titulo = request.form['titulo']
             # Recebe os autores do corpo da requisição JSON

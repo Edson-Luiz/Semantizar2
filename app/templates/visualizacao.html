@@ -30,27 +30,34 @@
   <p><a href="/">Página inicial</a> / <a href="cadastro">Cadastro</a> / <a href="cadastroTermos">Cadastro termos</a> / <a href="validacaoRelacao">Validação das relações</a> / Visualizações das relações</p>
 </div>
 <h1>Visualização das Relações</h1>
-<div style="display: flex; justify-content: center;">
-  <img class="linhacadastro" src="{{ url_for('static', filename='img/linhadecadastrosemantizar4.png') }}" alt="linha de cadastro do sistema Semantizar 2.0">
+
+<div class="container">
+    <div style="display: flex; justify-content: center;">
+    <img class="linhacadastro" src="{{ url_for('static', filename='img/linhadecadastrosemantizar4.png') }}" alt="linha de cadastro do sistema Semantizar 2.0">
+    </div>
+    <h2>Relações Extraídas</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Termo 1</th>
+                <th>Predicado</th>
+                <th>Termo 2</th>
+            </tr>
+        </thead>
+        <tbody id="relations-table">
+        </tbody>
+    </table><br>
+    <h2>Frequência de Termos</h2>
+    <canvas id="chart"></canvas><br>
+    <h2>Distribuição de Relações (Gráfico de Pizza)</h2>
+    <canvas id="pie-chart"></canvas><br>
+    <h2>Nuvem de Palavras</h2>
+    <canvas id="wordcloud"></canvas><br>
 </div>
-<h2>Relações Extraídas</h2>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Termo 1</th>
-            <th>Predicado</th>
-            <th>Termo 2</th>
-        </tr>
-    </thead>
-    <tbody id="relations-table">
-    </tbody>
-</table>
-<h2>Frequência de Termos</h2>
-<canvas id="chart"></canvas>
-<h2>Distribuição de Relações (Gráfico de Pizza)</h2>
-<canvas id="pie-chart"></canvas>
-<h2>Nuvem de Palavras</h2>
-<canvas id="wordcloud"></canvas>
+
+<footer>
+    <p>&copy; 2025 Semantizar 2.0. Todos os direitos reservados.</p>
+</footer>
 <script>
     async function carregarRelacoes() {
         try {
