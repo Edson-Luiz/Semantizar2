@@ -506,6 +506,7 @@ table {
     font-family: sans-serif;
     font-size: 0.8rem;
     letter-spacing: 1px;
+    margin: 0 auto;
   }
   
   caption {
@@ -644,11 +645,14 @@ canvas {
     width: 100%; /* Garante que eles sejam responsivos */
     height: auto;
     display: block;
+    text-align: left;
+    justify-content: left;
+    align-items: left;
     margin: 0 auto;
 }
 
 .btn-download {
-    background-color: #36A2EB;
+    background-color: #4c66af;
     color: white;
     padding: 10px 15px;
     border: none;
@@ -659,5 +663,11 @@ canvas {
 }
 
 .btn-download:hover {
-    background-color: #2581c4;
+    background-color: rgb(26, 39, 155);
+}
+
+.graficos {
+
+    text-align: left;
+
 }

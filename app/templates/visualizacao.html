@@ -28,14 +28,15 @@
 </header>
 <div class="indicador-pagina">
   <p><a href="/">Página inicial</a> / <a href="cadastro">Cadastro</a> / <a href="cadastroTermos">Cadastro termos</a> / <a href="validacaoRelacao">Validação das relações</a> / Visualizações das relações</p>
-</div>
+</div><br>
+
 <h1>Visualização das Relações</h1>
 
 <div class="container">
     <div style="display: flex; justify-content: center;">
-    <img class="linhacadastro" src="{{ url_for('static', filename='img/linhadecadastrosemantizar4.png') }}" alt="linha de cadastro do sistema Semantizar 2.0">
+    <img class="linhacadastro" src="{{ url_for('static', filename='img/linhadecadastrosemantizar4.png') }}" alt="linha de cadastro do sistema Semantizar 2.0"  style="max-width: 90%;">
     </div>
-    <h2>Relações Extraídas</h2>
+    <h2>Relações extraídas</h2>
     <table border="1">
         <thead>
             <tr>
@@ -47,20 +48,25 @@
         <tbody id="relations-table">
         </tbody>
     </table><br>
-    <button onclick="baixarCSV()" class="btn-download">Baixar CSV</button>
+    <button onclick="baixarCSV()" class="btn-download">Baixar CSV</button><br><br>
 
-    <h2>Frequência de Termos</h2>
-    <canvas id="chart"></canvas>
-    <button onclick="baixarImagem('chart', 'grafico_barras.png')" class="btn-download">Baixar Gráfico de Barras</button><br>
+    <div class="graficos">
+        <h2>Frequência de termos</h2>
+        <canvas id="chart"></canvas>
+        <button onclick="baixarImagem('chart', 'grafico_barras.png')" class="btn-download">Baixar Gráfico de Barras</button><br><br>
 
-    <h2>Distribuição de Relações (Gráfico de Pizza)</h2>
-    <canvas id="pie-chart"></canvas>
-    <button onclick="baixarImagem('pie-chart', 'grafico_pizza.png')" class="btn-download">Baixar Gráfico de Pizza</button><br>
+        <h2>Distribuição de relações (Gráfico de Pizza)</h2>
+        <canvas id="pie-chart"></canvas>
+        <button onclick="baixarImagem('pie-chart', 'grafico_pizza.png')" class="btn-download">Baixar Gráfico de Pizza</button><br><br>
 
-    <h2>Nuvem de Palavras</h2>
-    <canvas id="wordcloud"></canvas>
-    <button onclick="baixarImagem('wordcloud', 'nuvem_palavras.png')" class="btn-download">Baixar Nuvem de Palavras</button><br>
+        <h2>Nuvem de palavras</h2>
+        <canvas id="wordcloud"></canvas>
+        <button onclick="baixarImagem('wordcloud', 'nuvem_palavras.png')" class="btn-download">Baixar Nuvem de Palavras</button><br><br>
+    </div>
+
 </div>
+
+<a href="/" style="margin-left: 20px;  text-decoration: underline;">Voltar para pagina inicial</a>
 
 <footer>
     <p>&copy; 2025 Semantizar 2.0. Todos os direitos reservados.</p>
@@ -81,6 +87,7 @@
 
             let termoFreq = {};
             let predicadoFreq = {};
+            let grafoDados = [];
 
             data.forEach(relacao => {
                 const row = tableBody.insertRow();
@@ -91,11 +98,14 @@
                 termoFreq[relacao.termo1] = (termoFreq[relacao.termo1] || 0) + 1;
                 termoFreq[relacao.termo2] = (termoFreq[relacao.termo2] || 0) + 1;
                 predicadoFreq[relacao.predicado] = (predicadoFreq[relacao.predicado] || 0) + 1;
+
+                grafoDados.push({ source: relacao.termo1, target: relacao.termo2, type: relacao.predicado });
             });
 
             criarGraficoBarras(termoFreq);
             criarGraficoPizza(predicadoFreq);
             criarNuvemPalavras(termoFreq);
+            criarGrafo(grafoDados);
         } catch (error) {
             console.error("Erro ao carregar as relações:", error);
             alert("Houve um erro ao carregar as relações.");
@@ -145,14 +155,15 @@
     WordCloud(canvas, {
         list: words,
         gridSize: 8,
-        weightFactor: 3,
+        weightFactor: 15,
         fontFamily: 'Arial',
         color: 'random-dark',
         backgroundColor: '#ffffff'
     });
 }
 
-    window.onload = carregarRelacoes;
+
+window.onload = carregarRelacoes;
 </script>
 
 <script src="{{ url_for('static', filename='../static/js/script.js') }}"></script>
