@@ -543,4 +543,43 @@ function finalizarValidacao() {
     
 }
 
-// Alterei para garantir que o carregamento dos dados ocorre após a página carregar
+// BAIXAR AS VISUALIZAÇÕES
+
+function baixarImagem(canvasId, nomeArquivo) {
+    const canvas = document.getElementById(canvasId);
+
+    if (!canvas) {
+        alert("Erro: Canvas não encontrado!");
+        return;
+    }
+
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png"); // Converte para PNG
+    link.download = nomeArquivo;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function baixarCSV() {
+    const table = document.getElementById("relations-table");
+    let csvContent = "data:text/csv;charset=utf-8,Termo 1,Predicado,Termo 2\n";
+
+    for (let row of table.rows) {
+        let rowData = [];
+        for (let cell of row.cells) {
+            rowData.push(cell.textContent);
+        }
+        csvContent += rowData.join(",") + "\n";
+    }
+
+    // Criar um link temporário para download
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "relacoes_semanticas.csv");
+    document.body.appendChild(link); // Necessário para Firefox
+    link.click();
+    document.body.removeChild(link);
+}
+

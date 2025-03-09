@@ -646,3 +646,18 @@ canvas {
     display: block;
     margin: 0 auto;
 }
+
+.btn-download {
+    background-color: #36A2EB;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.btn-download:hover {
+    background-color: #2581c4;
+}

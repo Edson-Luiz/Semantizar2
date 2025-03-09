@@ -47,12 +47,19 @@
         <tbody id="relations-table">
         </tbody>
     </table><br>
+    <button onclick="baixarCSV()" class="btn-download">Baixar CSV</button>
+
     <h2>Frequência de Termos</h2>
-    <canvas id="chart"></canvas><br>
+    <canvas id="chart"></canvas>
+    <button onclick="baixarImagem('chart', 'grafico_barras.png')" class="btn-download">Baixar Gráfico de Barras</button><br>
+
     <h2>Distribuição de Relações (Gráfico de Pizza)</h2>
-    <canvas id="pie-chart"></canvas><br>
+    <canvas id="pie-chart"></canvas>
+    <button onclick="baixarImagem('pie-chart', 'grafico_pizza.png')" class="btn-download">Baixar Gráfico de Pizza</button><br>
+
     <h2>Nuvem de Palavras</h2>
-    <canvas id="wordcloud"></canvas><br>
+    <canvas id="wordcloud"></canvas>
+    <button onclick="baixarImagem('wordcloud', 'nuvem_palavras.png')" class="btn-download">Baixar Nuvem de Palavras</button><br>
 </div>
 
 <footer>
@@ -125,14 +132,29 @@
     }
 
     function criarNuvemPalavras(dados) {
-        const canvas = document.getElementById("wordcloud");
-        const ctx = canvas.getContext("2d");
-        const words = Object.keys(dados).map(word => ({ text: word, size: 10 + dados[word] * 5 }));
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        WordCloud(canvas, { list: words.map(w => [w.text, w.size]), gridSize: 10, weightFactor: 2 });
-    }
+    const canvas = document.getElementById("wordcloud");
+
+    // Criar a lista de palavras corretamente formatada
+    const words = Object.keys(dados).map(word => [word, dados[word]]);
+
+    console.log("Palavras enviadas para a nuvem:", words); // Debug
+
+    canvas.width = 500;
+    canvas.height = 400;
+
+    WordCloud(canvas, {
+        list: words,
+        gridSize: 8,
+        weightFactor: 3,
+        fontFamily: 'Arial',
+        color: 'random-dark',
+        backgroundColor: '#ffffff'
+    });
+}
 
     window.onload = carregarRelacoes;
 </script>
+
+<script src="{{ url_for('static', filename='../static/js/script.js') }}"></script>
 </body>
 </html>
