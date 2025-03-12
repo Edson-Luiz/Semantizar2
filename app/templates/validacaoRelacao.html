@@ -41,47 +41,47 @@
         <h2><img class="linhacadastro"  src="{{ url_for('static', filename='img/linhadecadastrosemantizar3.png') }}" alt="linha de cadastro do sistema Semantizar 2.0"></h2>
     </div>
 
-    <div class="container d-flex justify-content-center align-items-center vh-100">
-        <div class="d-inline-block">
-            <table class="table table-bordered text-center mx-auto">
-                <thead>
-                    <tr>
-                        <th>Termo 1</th>
-                        <th>Termo 2</th>
-                        <th>Frase</th>
-                        <th>Validação</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for par in relacoes %}
-                    <tr>
-                        <td>{{ par.termo1 }}</td>
-                        <td>{{ par.termo2 }}</td>
-                        <td>{{ par.frase }}</td>
-                        <td>
-                            <button class="btn btn-success btn-sm"
-                                style="cursor: pointer;" 
-                                data-termo1="{{ par.termo1 }}" 
-                                data-termo2="{{ par.termo2 }}" 
-                                data-frase="{{ par.frase }}" 
-                                onclick="validarRelacao(this, true)">✅
-                            </button>
-                            <button class="btn btn-danger btn-sm"
-                                style="cursor: pointer;" 
-                                data-termo1="{{ par.termo1 }}" 
-                                data-termo2="{{ par.termo2 }}" 
-                                data-frase="{{ par.frase }}" 
-                                onclick="validarRelacao(this, false)">❌
-                            </button>                        
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div><br>
+        <div class="container d-flex justify-content-center align-items-center vh-100">
+            <div class="d-inline-block">
+                <table class="table table-bordered text-center mx-auto">
+                    <thead>
+                        <tr>
+                            <th>Termo 1</th>
+                            <th>Termo 2</th>
+                            <th>Frase</th>
+                            <th>Validação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for par in relacoes %}
+                        <tr>
+                            <td>{{ par.termo1 }}</td>
+                            <td>{{ par.termo2 }}</td>
+                            <td>{{ par.frase }}</td>
+                            <td>
+                                <button class="btn btn-success btn-sm"
+                                    style="cursor: pointer;" 
+                                    data-termo1="{{ par.termo1 }}" 
+                                    data-termo2="{{ par.termo2 }}" 
+                                    data-frase="{{ par.frase }}" 
+                                    onclick="validarRelacao(this, true)">✅
+                                </button>
+                                <button class="btn btn-danger btn-sm"
+                                    style="cursor: pointer;" 
+                                    data-termo1="{{ par.termo1 }}" 
+                                    data-termo2="{{ par.termo2 }}" 
+                                    data-frase="{{ par.frase }}" 
+                                    onclick="validarRelacao(this, false)">❌
+                                </button>                        
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div><br>
 
-        <button class="button" onclick="finalizarValidacao()">Finalizar</button>
-    </div>
+            <button class="button" onclick="finalizarValidacao()">Finalizar</button>
+        </div>
     
     
     <footer>

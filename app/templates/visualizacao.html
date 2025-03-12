@@ -34,15 +34,15 @@
 
 <div class="container">
     <div style="display: flex; justify-content: center;">
-    <img class="linhacadastro" src="{{ url_for('static', filename='img/linhadecadastrosemantizar4.png') }}" alt="linha de cadastro do sistema Semantizar 2.0"  style="max-width: 90%;">
+        <img class="linhacadastro" src="{{ url_for('static', filename='img/linhadecadastrosemantizar4.png') }}" alt="linha de cadastro do sistema Semantizar 2.0"  style="max-width: 90%;">
     </div>
     <h2>Relações extraídas</h2>
     <table border="1">
         <thead>
             <tr>
-                <th>Termo 1</th>
-                <th>Predicado</th>
-                <th>Termo 2</th>
+                <th>Conceito 1</th>
+                <th>Relação semântica</th>
+                <th>Conceito 2</th>
             </tr>
         </thead>
         <tbody id="relations-table">
@@ -83,24 +83,40 @@
             }
 
             const tableBody = document.getElementById("relations-table");
+            const relationsByTerm = document.getElementById("relations-by-term");
+
             tableBody.innerHTML = '';
+            relationsByTerm.innerHTML = '';
 
             let termoFreq = {};
             let predicadoFreq = {};
             let grafoDados = [];
+            let relacoesPorTermo = {};
 
             data.forEach(relacao => {
+                // Preenchendo a tabela original
                 const row = tableBody.insertRow();
                 row.insertCell(0).textContent = relacao.termo1;
                 row.insertCell(1).textContent = relacao.predicado;
                 row.insertCell(2).textContent = relacao.termo2;
 
+                // Contabilizando frequências
                 termoFreq[relacao.termo1] = (termoFreq[relacao.termo1] || 0) + 1;
                 termoFreq[relacao.termo2] = (termoFreq[relacao.termo2] || 0) + 1;
                 predicadoFreq[relacao.predicado] = (predicadoFreq[relacao.predicado] || 0) + 1;
 
+                // Criando estrutura para armazenar relações por termo 1
+                if (!relacoesPorTermo[relacao.termo1]) {
+                    relacoesPorTermo[relacao.termo1] = [];
+                }
+                relacoesPorTermo[relacao.termo1].push({
+                    predicado: relacao.predicado,
+                    termo2: relacao.termo2
+                });
+
                 grafoDados.push({ source: relacao.termo1, target: relacao.termo2, type: relacao.predicado });
             });
+
 
             criarGraficoBarras(termoFreq);
             criarGraficoPizza(predicadoFreq);
@@ -108,9 +124,9 @@
             criarGrafo(grafoDados);
         } catch (error) {
             console.error("Erro ao carregar as relações:", error);
-            alert("Houve um erro ao carregar as relações.");
         }
     }
+
 
     function criarGraficoBarras(dados) {
         new Chart(document.getElementById("chart"), {
