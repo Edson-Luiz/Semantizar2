@@ -32,8 +32,8 @@ As principais dependências do projeto incluem:
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/seu-usuario/semantizar2.git
-   cd semantizar2
+   git clone https://github.com/Edson-Luiz/Semantizar2.git
+   cd Semantizar2
    ```
 
 2. Crie e ative um ambiente virtual:
